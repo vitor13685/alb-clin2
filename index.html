@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALB CLIN - Aprendizagem e Desenvolvimento</title>
+<style>
+/* Escala tipográfica: 11 (rótulos) · 13 (apoio) · 14 (corpo) · 16 (títulos de bloco) · 20 (KPI) · 24 (título de página) */
+:root{--bg:#f3f5f9;--fg:#18202f;--card:#fff;--primary:#475569;--pfg:#fff;--accent:#f2a84b;--border:#e2e7f0;--muted:#64748b;--soft:#f1f5fb;--red:#dc2626;--green:#15803d;--side:#1f2937;--sidefg:#cbd5e1;--shadow:0 1px 2px rgba(15,23,42,.05),0 2px 8px rgba(15,23,42,.04)}
+body.dark{--bg:#0a0f1c;--fg:#e6ebf3;--card:#121a2c;--primary:#cbd5e1;--pfg:#0f172a;--accent:#f2a84b;--border:#22304a;--muted:#8fa0bb;--soft:#18223a;--red:#f87171;--green:#4ade80;--side:#070c17;--sidefg:#9fb0cb;--shadow:none}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-size:14px;line-height:1.45;font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.app{display:grid;grid-template-columns:232px 1fr;height:100vh;overflow:hidden}
+/* sidebar */
+aside{background:var(--side);color:var(--sidefg);display:flex;flex-direction:column;min-height:0;overflow:auto}
+.brand{padding:14px 14px 12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand .logo{background:#fdf6ea;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;height:120px;cursor:pointer;position:relative;transition:box-shadow .15s}
+.brand .logo:hover{box-shadow:0 0 0 2px var(--accent)}
+.brand .logo::after{content:"Clique para alterar";position:absolute;inset:auto 0 0 0;text-align:center;font-size:11px;font-weight:600;color:#fff;background:rgba(15,23,42,.72);padding:4px 0;opacity:0;transition:opacity .15s}
+.brand .logo:hover::after{opacity:1}
+.brand .logo img{width:100%;height:100%;object-fit:cover;display:block}
+.brand .logo .hint{display:none;color:var(--primary);font-weight:800;font-size:16px;text-align:center;line-height:1.2}
+.brand .logo .hint small{display:block;font-size:11px;font-weight:600;color:#475569;margin-top:2px}
+.grp{padding:14px 14px 4px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#7d8fb0;font-weight:700}
+nav{display:flex;flex-direction:column;padding:0 8px 8px;gap:1px}
+nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;color:var(--sidefg);text-decoration:none;font-weight:500;font-size:14px}
+nav a .ic{width:18px;text-align:center;opacity:.8;font-size:13px}
+nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+nav a.on{background:var(--accent);color:#1a1a1a;font-weight:600}
+body.dark nav a.on{color:#111}
+.sidefoot{margin-top:auto;padding:12px 14px;font-size:11px;color:#7d8fb0;border-top:1px solid rgba(255,255,255,.08)}
+.sidefoot b{color:#e2e8f0;font-weight:600}
+/* main */
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+header.top{display:flex;align-items:center;gap:12px;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0}
+header.top .crumb{font-size:13px;color:var(--muted);white-space:nowrap}
+header.top .search{flex:1;max-width:420px;margin-left:auto;position:relative}
+header.top .search input{width:100%;padding-left:12px}
+.menuwrap{position:relative}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:280px;box-shadow:0 14px 36px rgba(15,23,42,.18);z-index:20;flex-direction:column}
+.menu.open{display:flex}
+.menu button,.menu label{background:none;border:0;color:var(--fg);text-align:left;padding:8px 10px;border-radius:6px;cursor:pointer;font:inherit;font-size:14px}
+.menu button:hover,.menu label:hover{background:var(--soft)}
+.menu hr{border:0;border-top:1px solid var(--border);margin:6px 0}
+.content{flex:1;overflow:auto;padding:20px 24px 28px}
+footer{margin-top:28px;border-top:1px solid var(--border);padding-top:12px;text-align:center;color:var(--muted);font-size:12px}
+footer b{color:var(--fg);font-weight:600}
+/* tipografia */
+h1{font-size:24px;font-weight:700;margin:0;letter-spacing:-.3px}
+.sub{color:var(--muted);font-size:13px;margin:2px 0 16px}
+h2{font-size:16px;font-weight:700;margin:0 0 10px}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.spacer{flex:1}
+/* blocos */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.kpi{position:relative;padding:12px 14px 12px 18px;margin:0}
+.kpi::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+.kpi .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+.kpi .v{display:block;font-size:20px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .hint{color:var(--muted);font-size:12px}
+.kpi.alert .v{color:var(--red)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px}
+.cols2{display:grid;grid-template-columns:1.4fr 1fr;gap:12px}
+@media(max-width:1100px){.cols2{grid-template-columns:1fr}}
+/* botões e campos */
+.btn{background:var(--primary);color:var(--pfg);border:1px solid transparent;border-radius:7px;padding:7px 12px;cursor:pointer;font:inherit;font-size:13px;font-weight:600;white-space:nowrap;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn.ghost{background:var(--card);color:var(--fg);border-color:var(--border)}
+.btn.ghost:hover{background:var(--soft);filter:none}
+.btn.danger{background:transparent;color:var(--red);border-color:var(--red)}
+.btn.danger:hover{background:rgba(220,38,38,.08);filter:none}
+.btn.on{background:var(--primary);color:var(--pfg)}
+.btn.icon{padding:4px 8px}
+input,select,textarea{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:7px;padding:7px 10px;font:inherit;font-size:13px;min-height:34px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+/* tabelas */
+.tablewrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:auto;box-shadow:var(--shadow);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:var(--soft);font-weight:700;white-space:nowrap}
+tbody tr:hover td{background:var(--soft)}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.acts{white-space:nowrap;text-align:right}
+.acts .btn{margin-left:4px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.strong{font-weight:700}
+.pos{color:var(--green);font-weight:700}
+.neg{color:var(--red);font-weight:700}
+/* cards de registro */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:14px}
+.rcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.rcard h3{margin:0;font-size:15px;font-weight:700}
+.rcard .meta{font-size:13px;color:var(--muted)}
+.rcard .foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.tag{display:inline-block;border-radius:999px;padding:1px 9px;font-size:11px;font-weight:700;background:var(--soft);color:var(--muted);white-space:nowrap}
+.tag.ok{background:#e7f6ec;color:#166534}
+.tag.warn{background:#fdf0dc;color:#9a5b00}
+.tag.bad{background:#fdecec;color:#991b1b}
+.tag.info{background:#e6eefb;color:#1b3b6f}
+body.dark .tag.info{background:#1b2a48;color:#9ec1ff}
+body.dark .tag.ok{background:#14301f;color:#86efac}
+body.dark .tag.warn{background:#33250e;color:#fcd34d}
+body.dark .tag.bad{background:#3a1717;color:#fca5a5}
+.alert{display:flex;align-items:center;gap:10px;background:rgba(245,169,74,.13);border:1px solid rgba(245,169,74,.55);padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:13px}
+.alert.red{background:rgba(220,38,38,.07);border-color:rgba(220,38,38,.45)}
+.alert .go{margin-left:auto}
+.bar{display:flex;align-items:flex-end;gap:3px;height:180px;border-bottom:1px solid var(--border)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding:8px 0;font-size:13px}
+.prow:last-child{border-bottom:0}
+.note{white-space:pre-wrap;font-size:13px;line-height:1.55}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px 16px}
+.kv .k{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700}
+.kv .v{font-size:14px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:14px;flex-wrap:wrap}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;margin-bottom:-1px}
+.tabs button.on{color:var(--fg);border-bottom-color:var(--accent)}
+/* modais */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.open{display:flex}
+.box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;width:min(640px,100%);max-height:90vh;overflow:auto;box-shadow:0 24px 60px rgba(15,23,42,.3)}
+.box.wide{width:min(820px,100%)}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.form input,.form select,.form textarea{text-transform:none;font-size:13px;letter-spacing:0;font-weight:400}
+.form textarea{min-height:84px;resize:vertical;font-family:inherit}
+.form .full{grid-column:1/-1}
+.checks{display:flex;align-items:center;gap:8px;font-size:13px;text-transform:none;color:var(--fg);font-weight:500}
+.hist{max-height:60vh;overflow:auto}
+.hitem{border-left:2px solid var(--accent);padding:6px 0 8px 12px;margin-bottom:6px}
+.hitem .when{font-size:12px;color:var(--muted)}
+.hitem .chg{font-size:12px;margin-top:3px}
+.hitem .chg span{display:inline-block;margin-right:10px}
+.hitem s{color:var(--red)}
+.hitem em{font-style:normal;color:var(--green)}
+@media print{aside,header.top,footer,.noprint{display:none!important}.app{display:block;height:auto}.content{overflow:visible;padding:0}body{background:#fff;color:#000}.card,.panel,.tablewrap,.rcard{box-shadow:none;border-color:#bbb}}
+@media(max-width:820px){.app{grid-template-columns:1fr;height:auto;overflow:visible}aside{position:static}.content{overflow:visible}.form{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="logo" id="logoBox">
+        <img id="logoImg" src="alb-clin-logo.png" alt="Logotipo ALB CLIN" onerror="logoMissing()">
+        <div class="hint" id="logoHint">ALB CLIN<small>Aprendizagem e Desenvolvimento</small></div>
+      </div>
+    </div>
+    <div class="grp">Principal</div>
+    <nav id="nav1"></nav>
+    <div class="grp">Clínica</div>
+    <nav id="nav2"></nav>
+    <div class="grp">Financeiro</div>
+    <nav id="nav3"></nav>
+    <div class="grp">Sistema</div>
+    <nav id="nav4"></nav>
+    <div class="sidefoot">Aplicativo desenvolvido por<br><b>Vitor Hugo Callegari de Oliveira</b></div>
+  </aside>
+
+  <div class="main">
+    <header class="top">
+      <div class="crumb" id="crumb"></div>
+      <div class="search noprint"><input id="gsearch" placeholder="Buscar paciente, doutora, convênio…" oninput="globalSearch(this.value)"></div>
+      <div class="menuwrap noprint">
+        <button class="btn ghost sm" id="menuBtn">⋯ Opções</button>
+        <div class="menu" id="menu">
+          <button data-m="theme" id="themeBtn">Tema escuro</button>
+          <button data-m="fs" id="fsBtn">Tela cheia</button>
+          <button data-m="print">Imprimir esta tela</button>
+          <button data-m="xls">Exportar backup (Excel / Sheets)</button>
+          <label>Importar backup (.xls)<input type="file" id="impFile" accept=".xls,.xml" hidden></label>
+          <hr>
+          <button data-m="sample">Carregar dados de exemplo</button>
+          <button data-m="clear">Apagar todos os dados</button>
+        </div>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+
+<input type="file" id="logoFile" accept="image/*" hidden>
+
+<div class="modal" id="modal"><div class="box">
+  <div class="mhead"><h2 id="mTitle" style="margin:0"></h2><button class="btn ghost sm" id="mClose" type="button">Fechar ✕</button></div>
+  <form id="mForm" class="form"></form>
+</div></div>
+
+<div class="modal" id="hmodal"><div class="box wide">
+  <div class="mhead"><h2 id="hTitle" style="margin:0"></h2><button class="btn ghost sm" data-hclose type="button">Fechar ✕</button></div>
+  <div class="hist" id="hBody"></div>
+</div></div>
+
+<script>
+/* ============ utilitários ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const fmtD = s => (s ? s.split('-').reverse().join('/') : '');
+const fmtTS = iso => new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const addDays = (iso, n) => { const x = new Date(iso + 'T12:00:00'); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const YEARS = [0,1,2,3,4].map(i => new Date().getFullYear() - 2 + i);
+const SERVICES = ['Psicoterapia','ABA','Seminário','Avaliação','Neuropsicologia','Psicoterapia de casal','Orientação parental'];
+const STATUS = ['agendado','confirmado','realizado','faltou','cancelado'];
+const PSTATUS = ['ativo','pausa','alta'];
+const PAY = [{value:'convenio',label:'Convênio'},{value:'particular',label:'Particular'}];
+const CATS = ['Consultas particulares','Repasse de convênio','Sessões ABA','Venda de produtos','Estorno','Reembolso recebido','Aluguel','Condomínio','Energia','Água','Internet','Telefone','Salários','Pró-labore','Comissões','INSS/FGTS','Contabilidade','Impostos','Marketing','Transporte','Manutenção','Equipamentos','Material terapêutico','Material de escritório','Insumos de limpeza','Copa','Software / sistemas','Cursos e supervisão','Outros'];
+const SUP_CATS = ['Limpeza','Higiene','Escritório','Material terapêutico','Copa','Outros'];
+const ENTLABEL = { professionals:'Doutora', patients:'Paciente', appointments:'Atendimento', insurers:'Convênio', guides:'Guia', evolutions:'Evolução', cash:'Lançamento', supplies:'Insumo', movements:'Movimentação', waitlist:'Lista de espera', invoices:'Nota fiscal' };
+const FIELDLABEL = { name:'nome', specialty:'especialidade', crp:'CRP', phone:'telefone', email:'e-mail', weekdays:'dias', commission:'repasse', active:'disponível', cpf:'CPF', birth:'nascimento', responsible:'responsável', payer_type:'tipo', insurer:'convênio', card_number:'carteirinha', session_value:'valor da sessão', professional_name:'doutora', status:'status', consent:'termo', anamnese:'anamnese', notes:'observações', date:'data', time:'horário', patient_name:'paciente', professional_id:'doutora', service:'atendimento', value:'valor', guide_number:'guia', number:'nº', validity:'validade', authorized:'sessões autorizadas', text:'registro', type:'tipo', description:'descrição', category:'categoria', amount:'valor', payment_method:'forma', due_date:'vencimento', payer:'pagador', deadline_days:'prazo (dias)', contact:'contato', unit:'unidade', quantity:'quantidade', min_quantity:'mínimo', unit_cost:'custo unitário', supplier:'fornecedor', preference:'preferência', address:'endereço', fee:'taxa', cnpj:'CNPJ', clinicName:'clínica' };
+
+const SCHEMA = {
+  professionals: { sheet: 'Doutoras', cols: ['id','name','specialty','crp','phone','email','weekdays','commission','active'], num: ['commission'], bool: ['active'] },
+  patients: { sheet: 'Pacientes', cols: ['id','name','cpf','birth','phone','email','responsible','payer_type','insurer','card_number','session_value','professional_name','status','consent','anamnese','notes'], num: ['session_value'], bool: ['consent'] },
+  appointments: { sheet: 'Agenda', cols: ['id','date','time','patient_name','professional_id','professional_name','service','payer_type','insurer','guide_number','value','status','notes'], num: ['value'] },
+  insurers: { sheet: 'Convenios', cols: ['id','name','deadline_days','contact'], num: ['deadline_days'] },
+  guides: { sheet: 'Guias', cols: ['id','number','patient_name','insurer','date','validity','authorized','notes'], num: ['authorized'] },
+  evolutions: { sheet: 'Evolucoes', cols: ['id','patient_id','patient_name','date','professional_name','text'], num: [] },
+  cash: { sheet: 'Caixa', cols: ['id','type','status','date','due_date','category','description','payer','amount','payment_method'], num: ['amount'] },
+  supplies: { sheet: 'Insumos', cols: ['id','name','category','unit','quantity','min_quantity','unit_cost','supplier'], num: ['quantity','min_quantity','unit_cost'] },
+  movements: { sheet: 'Movimentacoes', cols: ['id','supply_id','supply_name','type','quantity','date','note'], num: ['quantity'] },
+  waitlist: { sheet: 'ListaEspera', cols: ['id','name','phone','professional_id','preference','date','notes'], num: [] },
+  invoices: { sheet: 'NotasFiscais', cols: ['id','tipo','numero','serie','chave','emissao','parte','documento','valor','impostos','categoria','status','anexo_nome','observacoes'], num: ['valor','impostos'] },
+  audit: { sheet: 'Historico', cols: ['id','ts','ent','rid','label','action','changes'], num: [] }
+};
+const ENT = Object.keys(SCHEMA).filter(k => k !== 'audit');
+
+let DB = {};
+const emptyDB = () => { const o = {}; ENT.forEach(e => o[e] = []); o.audit = []; o.settings = { clinicName: 'ALB CLIN – Aprendizagem e Desenvolvimento', cnpj: '00.000.000/0001-00', address: 'Rua Exemplo, 123 · São Paulo/SP', fee: 8 }; return o; };
+DB = emptyDB();
+
+const NAV = [
+  ['painel','Painel','◉',1],['agenda','Agenda','▦',1],['espera','Lista de espera','⏳',1],
+  ['pacientes','Pacientes','👥',2],['doutoras','Doutoras','✚',2],['convenios','Convênios e guias','▤',2],
+  ['caixa','Caixa e contas','$',3],['repasse','Repasses','⇄',3],['insumos','Insumos','▣',3],['notas','Notas fiscais','🧾',3],
+  ['historico','Histórico','↺',4],['config','Configurações','⚙',4]
+];
+const TITLE = Object.fromEntries(NAV.map(([k, l]) => [k, l]));
+let cur = 'painel', agendaDay = today(), caixaType = 'all', FICHA = null, FTAB = 'dados', NOTICE = null, HQ = { ent: 'all', q: '' }, LOGO = 'file', NF = { tipo: 'all', st: 'all' };
+const F = { year: new Date().getFullYear(), month: new Date().getMonth(), prof: 'all', payer: 'all' };
+const feeRate = () => (DB.settings.fee || 0) / 100;
+
+const inP = d => !!d && +d.slice(0,4) === F.year && (F.month < 0 || +d.slice(5,7) - 1 === F.month);
+const stock = s => (s.quantity || 0) <= 0 ? 'zerado' : (s.quantity || 0) <= (s.min_quantity || 0) ? 'baixo' : 'ok';
+function stockAlert(s, nq) {
+  const st = stock({ ...s, quantity: nq });
+  if (st === 'zerado') return `${s.name} está zerado. Repor o quanto antes.`;
+  if (st === 'baixo') return `${s.name} abaixo do mínimo: restam ${nq} ${s.unit || ''} (mínimo ${s.min_quantity || 0}).`;
+  return '';
+}
+function summ(list) {
+  const done = list.filter(a => a.status === 'realizado');
+  const sum = arr => arr.reduce((t, a) => t + (a.value || 0), 0);
+  const conv = done.filter(a => a.payer_type !== 'particular');
+  const tb = sum(conv), fee = tb * feeRate(), tl = tb - fee, pc = sum(done.filter(a => a.payer_type === 'particular'));
+  return { tb, fee, tl, pc, aba: sum(conv.filter(a => a.service === 'ABA')), total: tl + pc, sessions: done.length, absences: list.filter(a => a.status === 'faltou').length };
+}
+const guideUse = g => DB.appointments.filter(a => a.guide_number && a.guide_number === g.number && a.status === 'realizado').length;
+function cashList() {
+  const sess = DB.appointments.filter(a => a.status === 'realizado' && inP(a.date)).map(a => ({
+    id: 'a' + a.id, _appt: true, type: 'entrada', status: 'pago', date: a.date, category: 'Sessões', payer: a.patient_name,
+    description: `Sessão · ${a.patient_name}${a.professional_name ? ' · ' + a.professional_name : ''}`, amount: a.value || 0, payment_method: a.payer_type === 'particular' ? 'Particular' : 'Convênio'
+  }));
+  return [...sess, ...DB.cash.filter(c => inP(c.date))].sort((a, b) => b.date.localeCompare(a.date));
+}
+const byId = (ent, id) => DB[ent].find(r => r.id === id);
+const labelOf = (ent, r) => r.name || r.number || (r.numero ? 'NF ' + r.numero + (r.parte ? ' · ' + r.parte : '') : '') || r.patient_name || r.supply_name || r.description || r.category || r.text?.slice(0, 40) || r.id;
+
+/* ============ histórico (auditoria) ============ */
+function audit(ent, action, rec, changes = []) {
+  DB.audit.unshift({ id: uid(), ts: new Date().toISOString(), ent, rid: rec.id, label: labelOf(ent, rec), action, changes });
+}
+function diffs(oldR, newR) {
+  const keys = new Set([...Object.keys(oldR), ...Object.keys(newR)]); keys.delete('id'); keys.delete('_appt');
+  const out = [];
+  keys.forEach(k => {
+    const isFile = k === 'file';
+    const a = String((isFile ? oldR.file?.name : oldR[k]) ?? ''), b = String((isFile ? newR.file?.name : newR[k]) ?? '');
+    if (a !== b) out.push({ field: isFile ? 'anexo' : (FIELDLABEL[k] || k), from: a, to: b });
+  });
+  return out;
+}
+function save(ent, rec, quiet) {
+  if (rec.id) {
+    const i = DB[ent].findIndex(r => r.id === rec.id);
+    if (i >= 0) {
+      const ch = diffs(DB[ent][i], rec);
+      DB[ent][i] = rec;
+      if (ch.length && !quiet) audit(ent, 'Editado', rec, ch);
+      return rec;
+    }
+  }
+  const nr = { ...rec, id: uid() };
+  DB[ent].push(nr);
+  if (!quiet) audit(ent, 'Criado', nr);
+  return nr;
+}
+function removeRec(ent, id) {
+  const r = byId(ent, id); if (!r) return;
+  DB[ent] = DB[ent].filter(x => x.id !== id);
+  audit(ent, 'Excluído', r);
+}
+function histOf(ent, id) { return DB.audit.filter(h => h.rid === id); }
+function openHist(ent, id) {
+  const r = byId(ent, id); const list = histOf(ent, id);
+  $('#hTitle').textContent = `Histórico · ${ENTLABEL[ent] || ''} ${labelOf(ent, r || { id })}`;
+  $('#hBody').innerHTML = list.map(renderHItem).join('') || '<div class="muted">Sem registros de alteração.</div>';
+  $('#hmodal').classList.add('open');
+}
+function renderHItem(h) {
+  const ch = (h.changes || []).map(c => `<div class="chg"><b>${esc(c.field)}</b>: <s>${esc(c.from || '—')}</s> → <em>${esc(c.to || '—')}</em></div>`).join('');
+  const tag = h.action === 'Criado' ? 'ok' : h.action === 'Excluído' ? 'bad' : 'info';
+  return `<div class="hitem"><div class="when">${fmtTS(h.ts)} · <span class="tag ${tag}">${esc(h.action)}</span> · ${esc(ENTLABEL[h.ent] || h.ent)} · ${esc(h.label)}</div>${ch}</div>`;
+}
+
+/* ============ componentes ============ */
+const kpi = (label, value, hint = '', alert = false) => `<div class="card kpi ${alert ? 'alert' : ''}"><div class="lbl">${label}</div><b class="v">${value}</b>${hint ? `<div class="hint">${hint}</div>` : ''}</div>`;
+const phead = (t, sub, actions = '') => `<div class="phead"><div><h1>${t}</h1><div class="sub">${sub}</div></div><div class="row noprint" style="margin:0">${actions}</div></div>`;
+const filterBar = extra => `<div class="row noprint">
+  <select onchange="F.year=+this.value;go()">${YEARS.map(y => `<option${y === F.year ? ' selected' : ''}>${y}</option>`).join('')}</select>
+  <select onchange="F.month=+this.value;go()"><option value="-1"${F.month < 0 ? ' selected' : ''}>Ano todo</option>${MONTHS.map((m, i) => `<option value="${i}"${F.month === i ? ' selected' : ''}>${m}</option>`).join('')}</select>
+  ${extra}</div>`;
+const profSel = () => `<select onchange="F.prof=this.value;go()"><option value="all">Todas as doutoras</option>${DB.professionals.map(p => `<option value="${p.id}"${F.prof === p.id ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select>`;
+const payerSel = () => `<select onchange="F.payer=this.value;go()">${[['all','Convênio e particular'],['convenio','Convênios'],['particular','Particulares']].map(([v, l]) => `<option value="${v}"${F.payer === v ? ' selected' : ''}>${l}</option>`).join('')}</select>`;
+const cashStats = list => {
+  const s = (t, st) => list.filter(c => c.type === t && st(c)).reduce((x, c) => x + c.amount, 0);
+  return { ent: s('entrada', c => c.status !== 'pendente'), sai: s('saida', c => c.status !== 'pendente'), pend: s('saida', c => c.status === 'pendente') };
+};
+const statusTag = s => `<span class="tag ${['realizado','confirmado','ativo'].includes(s) ? 'ok' : ['faltou','cancelado'].includes(s) ? 'bad' : ['agendado','pausa'].includes(s) ? 'warn' : ''}">${esc(s)}</span>`;
+const profName = id => (byId('professionals', id) || {}).name || '';
+const hbtn = (ent, id) => `<button class="btn ghost sm" data-act="hist" data-ent="${ent}" data-id="${id}">Histórico</button>`;
+const ebtn = (ent, id) => `<button class="btn ghost sm" data-act="edit" data-ent="${ent}" data-id="${id}">Editar</button>`;
+const dbtn = (ent, id) => `<button class="btn danger sm" data-act="del" data-ent="${ent}" data-id="${id}">Excluir</button>`;
+
+/* ============ telas ============ */
+const V = {};
+
+V.painel = () => {
+  const appts = DB.appointments.filter(a => inP(a.date) && (F.prof === 'all' || a.professional_id === F.prof) && (F.payer === 'all' || a.payer_type === F.payer));
+  const cs = cashStats(cashList());
+  const s = summ(appts);
+  const T = today(), limit = addDays(T, 7);
+  const lowStock = DB.supplies.filter(x => stock(x) !== 'ok');
+  const guidesAlert = DB.guides.filter(g => guideUse(g) >= (g.authorized || 0) || (g.validity && g.validity < limit));
+  const dueBills = DB.cash.filter(c => c.type === 'saida' && c.status === 'pendente' && c.due_date && c.due_date <= limit);
+  const todayList = DB.appointments.filter(a => a.date === T).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  const n = F.month < 0 ? 12 : 31;
+  const cv = Array(n).fill(0), pv = Array(n).fill(0);
+  appts.filter(a => a.status === 'realizado').forEach(a => {
+    const i = F.month < 0 ? +a.date.slice(5,7) - 1 : +a.date.slice(8,10) - 1;
+    (a.payer_type === 'particular' ? pv : cv)[i] += a.value || 0;
+  });
+  const max = Math.max(1, ...cv.map((x, i) => x + pv[i]));
+  const bars = Array.from({ length: n }, (_, i) => `<div title="${fmt(cv[i] + pv[i])}" style="flex:1;display:flex;flex-direction:column-reverse;height:100%">
+    <div style="height:${pv[i] / max * 100}%;background:var(--accent);border-radius:3px 3px 0 0"></div><div style="height:${cv[i] / max * 100}%;background:var(--primary);border-radius:3px 3px 0 0"></div></div>`).join('');
+  const alerts = [
+    ...dueBills.map(c => `<div class="alert">Conta a pagar: <b>${esc(c.description || c.category)}</b> · ${fmt(c.amount)} · vence ${fmtD(c.due_date)}<button class="btn ghost sm go" data-act="goto" data-to="caixa">Ver</button></div>`),
+    ...guidesAlert.map(g => `<div class="alert red">Guia ${esc(g.number)} (${esc(g.patient_name)}): ${guideUse(g)}/${g.authorized} sessões${g.validity && g.validity < limit ? ' · vence ' + fmtD(g.validity) : ''}<button class="btn ghost sm go" data-act="goto" data-to="convenios">Ver</button></div>`),
+    ...lowStock.map(i => `<div class="alert">Estoque baixo: <b>${esc(i.name)}</b> (${i.quantity} ${esc(i.unit || '')})<button class="btn ghost sm go" data-act="goto" data-to="insumos">Ver</button></div>`)
+  ];
+  const semNF = DB.invoices.filter(n => !n.file && n.status !== 'cancelada' && inP(n.emissao));
+  if (semNF.length) alerts.push(`<div class="alert red">${semNF.length} nota(s) fiscal(is) sem anexo no período<button class="btn ghost sm go" data-act="goto" data-to="notas">Ver</button></div>`);
+  const byProf = Object.values(appts.filter(a => a.status === 'realizado').reduce((acc, a) => {
+    const k = a.professional_name || '—'; acc[k] = acc[k] || { name: k, n: 0, t: 0 }; acc[k].n++; acc[k].t += a.value || 0; return acc;
+  }, {})).sort((a, b) => b.t - a.t);
+  return phead('Painel', `${F.month < 0 ? 'Ano ' + F.year : MONTHS[F.month] + ' de ' + F.year} · visão geral`, '') +
+  filterBar(profSel() + payerSel()) +
+  `<div class="kpis">${kpi('Total bruto', fmt(s.tb + s.pc), s.sessions + ' sessões realizadas')}${kpi('Taxa da clínica', fmt(s.fee), (DB.settings.fee || 0) + '% sobre convênios')}${kpi('Total líquido', fmt(s.total))}
+    ${kpi('Particulares', fmt(s.pc), 'ABA: ' + fmt(s.aba))}${kpi('Saldo de caixa', fmt(cs.ent - cs.sai), 'Entradas ' + fmt(cs.ent) + ' · Saídas ' + fmt(cs.sai))}${kpi('A pagar', fmt(cs.pend))}
+    ${kpi('Faltas no período', s.absences)}${kpi('Atendimentos hoje', todayList.length)}</div>
+  ${alerts.length ? `<div class="panel"><h2>Alertas</h2>${alerts.join('')}</div>` : ''}
+  <div class="cols2">
+    <div class="panel"><h2>Faturamento ${F.month < 0 ? 'mensal' : 'diário'}</h2>
+      <div class="bar">${bars}</div>
+      <div class="legend"><span><i style="background:var(--primary)"></i>Convênios</span><span><i style="background:var(--accent)"></i>Particulares</span></div></div>
+    <div class="panel"><h2>Agenda de hoje</h2>${todayList.map(a => `<div class="prow"><span><b>${esc(a.time || '--:--')}</b> · ${esc(a.patient_name)} <span class="muted">· ${esc(a.professional_name || '')}</span></span>${statusTag(a.status)}</div>`).join('') || '<div class="muted">Nenhum atendimento hoje.</div>'}</div>
+  </div>
+  <div class="panel"><h2>Por doutora</h2>${byProf.map(p => `<div class="prow"><span>${esc(p.name)}</span><span class="muted">${p.n} sessões · <b style="color:var(--fg)">${fmt(p.t)}</b></span></div>`).join('') || '<div class="muted">Nenhum atendimento realizado no período.</div>'}</div>`;
+};
+
+V.agenda = () => {
+  const items = DB.appointments.filter(a => a.date === agendaDay && (F.prof === 'all' || a.professional_id === F.prof)).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  return phead('Agenda', 'Atendimentos do dia por doutora', `<button class="btn" data-act="new" data-ent="appointments">+ Agendar</button>`) + `
+  <div class="row noprint">
+    <button class="btn ghost sm" onclick="shiftDay(-1)">‹ Anterior</button>
+    <input type="date" value="${agendaDay}" onchange="agendaDay=this.value;go()">
+    <button class="btn ghost sm" onclick="shiftDay(1)">Próximo ›</button>
+    <button class="btn ghost sm" onclick="agendaDay=today();go()">Hoje</button>
+    ${profSel()}
+    <span class="muted small">${items.length} atendimento(s)</span>
+  </div>` +
+  (items.length ? `<div class="tablewrap"><table><thead><tr><th>Horário</th><th>Paciente</th><th>Doutora</th><th>Atendimento</th><th>Convênio / guia</th><th>Valor</th><th>Situação</th><th></th></tr></thead><tbody>
+  ${items.map(a => `<tr>
+    <td><b>${esc(a.time || '--:--')}</b></td>
+    <td><b>${esc(a.patient_name)}</b>${a.notes ? `<div class="muted small">${esc(a.notes)}</div>` : ''}</td>
+    <td>${esc(a.professional_name || '')}</td><td>${esc(a.service || '')}</td>
+    <td>${a.payer_type === 'particular' ? 'Particular' : esc(a.insurer || 'Convênio')}${a.guide_number ? `<div class="muted small">guia ${esc(a.guide_number)}</div>` : ''}</td>
+    <td class="num">${a.value ? fmt(a.value) : '—'}</td>
+    <td><select class="noprint" onchange="setStatus('${a.id}',this.value)">${STATUS.map(s => `<option${s === a.status ? ' selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td class="acts">${hbtn('appointments', a.id)}${ebtn('appointments', a.id)}${dbtn('appointments', a.id)}</td></tr>`).join('')}
+  </tbody></table></div>` : '<div class="card muted">Nenhum atendimento neste dia.</div>');
+};
+
+V.doutoras = () => phead('Doutoras', 'Equipe, registro profissional e percentual de repasse', `<button class="btn" data-act="new" data-ent="professionals">+ Nova doutora</button>`) +
+  `<div class="grid">${DB.professionals.map(p => `<div class="rcard">
+      <div class="row" style="justify-content:space-between;margin:0"><h3>${esc(p.name)}</h3>${p.active === false ? '<span class="tag">indisponível</span>' : '<span class="tag ok">disponível</span>'}</div>
+      <div class="meta">${esc(p.specialty || 'Psicologia')}${p.crp ? ' · CRP ' + esc(p.crp) : ''}</div>
+      <div class="small">Atende: ${esc(p.weekdays || '—')} · Repasse: <b>${p.commission ?? 0}%</b></div>
+      <div class="meta small">${esc(p.phone || '')} · ${esc(p.email || '')}</div>
+      <div class="foot">${hbtn('professionals', p.id)}${ebtn('professionals', p.id)}${dbtn('professionals', p.id)}</div>
+    </div>`).join('') || '<div class="card">Nenhuma doutora cadastrada.</div>'}</div>`;
+
+V.pacientes = () => phead('Pacientes', 'Cadastro, prontuário e documentos', `<button class="btn" data-act="new" data-ent="patients">+ Novo paciente</button>`) +
+  `<div class="row noprint"><input id="psearch" placeholder="Buscar paciente" oninput="renderPList()" style="min-width:240px">
+   <select id="ppay" onchange="renderPList()"><option value="all">Todos os convênios</option><option value="convenio">Convênio</option><option value="particular">Particular</option></select>
+   <select id="pstat" onchange="renderPList()"><option value="all">Todos os status</option>${PSTATUS.map(s => `<option value="${s}">${s}</option>`).join('')}</select>
+   <span class="muted small" id="pcount"></span></div><div id="plist"></div>`;
+function renderPList() {
+  const q = ($('#psearch')?.value || '').toLowerCase(), pay = $('#ppay')?.value || 'all', st = $('#pstat')?.value || 'all';
+  const rows = DB.patients.filter(p => (pay === 'all' || p.payer_type === pay) && (st === 'all' || (p.status || 'ativo') === st) && (p.name || '').toLowerCase().includes(q)).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  $('#pcount').textContent = rows.length + ' paciente(s)';
+  $('#plist').innerHTML = `<div class="tablewrap"><table><thead><tr><th>Paciente</th><th>Convênio</th><th>Doutora</th><th class="num">Sessão</th><th>Status</th><th>Termo</th><th></th></tr></thead><tbody>
+    ${rows.map(p => `<tr><td><b>${esc(p.name)}</b><div class="muted small">${esc(p.phone || '')}</div></td>
+      <td>${p.payer_type === 'particular' ? 'Particular' : esc(p.insurer)}</td><td>${esc(p.professional_name)}</td>
+      <td class="num">${p.session_value ? fmt(p.session_value) : '—'}</td><td>${statusTag(p.status || 'ativo')}</td>
+      <td>${p.consent ? '<span class="tag ok">assinado</span>' : '<span class="tag warn">pendente</span>'}</td>
+      <td class="acts"><button class="btn sm" data-act="ficha" data-id="${p.id}">Prontuário</button>${hbtn('patients', p.id)}${ebtn('patients', p.id)}${dbtn('patients', p.id)}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">Nenhum paciente encontrado.</td></tr>'}
+    </tbody></table></div>`;
+}
+
+V.ficha = () => {
+  const p = byId('patients', FICHA);
+  if (!p) { FTAB = 'dados'; return '<div class="card">Paciente não encontrado.</div>'; }
+  const apps = DB.appointments.filter(a => a.patient_name === p.name).sort((a, b) => b.date.localeCompare(a.date));
+  const evols = DB.evolutions.filter(e => e.patient_id === p.id).sort((a, b) => b.date.localeCompare(a.date));
+  const done = apps.filter(a => a.status === 'realizado').length;
+  const tabs = [['dados','Dados'],['prontuario','Prontuário'],['atendimentos','Atendimentos'],['documentos','Documentos'],['historico','Histórico']];
+  let body = '';
+  if (FTAB === 'dados') body = `<div class="kpis">${kpi('Sessões realizadas', done)}${kpi('Faltas', apps.filter(a => a.status === 'faltou').length)}${kpi('Valor da sessão', p.session_value ? fmt(p.session_value) : '—')}${kpi('Status', p.status || 'ativo')}</div>
+    <div class="panel"><h2>Identificação</h2><div class="kv">
+      ${[['CPF', p.cpf],['Nascimento', fmtD(p.birth)],['Telefone', p.phone],['E-mail', p.email],['Responsável', p.responsible],['Tipo', p.payer_type === 'particular' ? 'Particular' : 'Convênio · ' + (p.insurer || '—')],['Carteirinha', p.card_number],['Doutora', p.professional_name]].map(([k, v]) => `<div><div class="k">${k}</div><div class="v">${esc(v || '—')}</div></div>`).join('')}
+    </div></div>
+    <div class="panel"><h2>Anamnese e observações</h2><div class="note">${esc(p.anamnese || 'Sem anamnese registrada.')}</div>${p.notes ? `<h2 style="margin-top:12px">Observações gerais</h2><div class="note">${esc(p.notes)}</div>` : ''}</div>`;
+  if (FTAB === 'prontuario') body = `<div class="alert">Prontuário sigiloso — Código de Ética do Psicólogo (Res. CFP nº 10/2005).</div>
+    <div class="row noprint"><button class="btn" onclick="FORMS.evolutions(null,'${p.id}')">+ Nova evolução</button></div>
+    ${evols.map(e => `<div class="panel"><div class="row" style="justify-content:space-between;margin-bottom:6px"><b>${fmtD(e.date)} · ${esc(e.professional_name || '')}</b><span class="noprint">${hbtn('evolutions', e.id)} ${ebtn('evolutions', e.id)} ${dbtn('evolutions', e.id)}</span></div><div class="note">${esc(e.text)}</div></div>`).join('') || '<div class="card muted">Nenhuma evolução registrada.</div>'}`;
+  if (FTAB === 'atendimentos') body = `<div class="tablewrap"><table><thead><tr><th>Data</th><th>Horário</th><th>Doutora</th><th>Atendimento</th><th class="num">Valor</th><th>Situação</th></tr></thead><tbody>
+    ${apps.map(a => `<tr><td>${fmtD(a.date)}</td><td>${esc(a.time || '')}</td><td>${esc(a.professional_name || '')}</td><td>${esc(a.service || '')}</td><td class="num">${a.value ? fmt(a.value) : ''}</td><td>${statusTag(a.status)}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Nenhum atendimento.</td></tr>'}</tbody></table></div>`;
+  if (FTAB === 'documentos') body = `<div class="panel"><h2>Termo de consentimento livre e esclarecido</h2>
+    <p class="note">Declaro estar ciente do atendimento psicológico, seus objetivos e o sigilo das informações.</p>
+    <label class="checks noprint"><input type="checkbox" ${p.consent ? 'checked' : ''} onchange="toggleConsent('${p.id}',this.checked)"> Termo assinado pelo paciente/responsável</label>
+    <p class="muted small" style="margin-top:10px">Situação: ${p.consent ? '<span class="tag ok">assinado</span>' : '<span class="tag warn">pendente</span>'}</p></div>
+    <div class="panel"><h2>Recibo</h2><p class="muted small">Gere o recibo pela tela Caixa e contas, na linha da sessão ou do lançamento.</p></div>`;
+  if (FTAB === 'historico') body = `<div class="tablewrap"><table><tbody>${DB.audit.filter(h => h.rid === p.id || (h.ent === 'evolutions' && evols.some(e => e.id === h.rid))).slice(0, 80).map(h => `<tr><td class="small muted" style="white-space:nowrap">${fmtTS(h.ts)}</td><td>${esc(h.action)} · ${esc(ENTLABEL[h.ent] || h.ent)}</td><td>${(h.changes || []).map(c => `${esc(c.field)}: ${esc(c.from || '—')} → ${esc(c.to || '—')}`).join('<br>')}</td></tr>`).join('') || '<tr><td class="muted">Sem alterações registradas.</td></tr>'}</tbody></table></div>`;
+  return `<div class="row noprint"><button class="btn ghost sm" onclick="location.hash='#pacientes'">‹ Pacientes</button></div>
+    ${phead(esc(p.name), `${p.payer_type === 'particular' ? 'Particular' : esc(p.insurer || 'Convênio')} · ${esc(p.professional_name || 'sem doutora definida')}`, `${ebtn('patients', p.id)}`)}
+    <div class="tabs noprint">${tabs.map(([k, l]) => `<button class="${FTAB === k ? 'on' : ''}" onclick="FTAB='${k}';go()">${l}</button>`).join('')}</div>` + body;
+};
+function toggleConsent(id, v) { const p = byId('patients', id); if (p) save('patients', { ...p, consent: v }); go(); }
+
+V.convenios = () => {
+  const guideRows = [...DB.guides].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  return phead('Convênios e guias', 'Prazos de pagamento e controle de sessões autorizadas', `<button class="btn" data-act="new" data-ent="insurers">+ Convênio</button><button class="btn" data-act="new" data-ent="guides">+ Guia</button>`) +
+  `<h2>Convênios</h2><div class="tablewrap"><table><thead><tr><th>Convênio</th><th>Prazo de pagamento</th><th>Contato</th><th></th></tr></thead><tbody>
+  ${DB.insurers.map(i => `<tr><td><b>${esc(i.name)}</b></td><td>${i.deadline_days ?? '—'} dias</td><td>${esc(i.contact || '')}</td><td class="acts">${hbtn('insurers', i.id)}${ebtn('insurers', i.id)}${dbtn('insurers', i.id)}</td></tr>`).join('') || '<tr><td class="muted">Nenhum convênio cadastrado.</td></tr>'}
+  </tbody></table></div>
+  <h2>Guias e autorizações</h2><div class="tablewrap"><table><thead><tr><th>Nº da guia</th><th>Paciente</th><th>Convênio</th><th>Validade</th><th>Usadas</th><th>Saldo</th><th></th></tr></thead><tbody>
+  ${guideRows.map(g => { const u = guideUse(g), saldo = (g.authorized || 0) - u; return `<tr>
+    <td>${esc(g.number)}</td><td>${esc(g.patient_name)}</td><td>${esc(g.insurer)}</td><td>${fmtD(g.validity)}</td>
+    <td>${u} / ${g.authorized || 0}</td><td>${saldo <= 0 ? '<span class="tag bad">esgotada</span>' : saldo <= 2 ? `<span class="tag warn">${saldo} restantes</span>` : `<span class="tag ok">${saldo}</span>`}</td>
+    <td class="acts">${hbtn('guides', g.id)}${ebtn('guides', g.id)}${dbtn('guides', g.id)}</td></tr>`; }).join('') || '<tr><td colspan="7" class="muted">Nenhuma guia cadastrada.</td></tr>'}
+  </tbody></table></div>`;
+};
+
+V.espera = () => phead('Lista de espera', 'Pacientes aguardando vaga', `<button class="btn" data-act="new" data-ent="waitlist">+ Inscrever</button>`) +
+  `<div class="tablewrap"><table><thead><tr><th>Nome</th><th>Telefone</th><th>Doutora</th><th>Preferência</th><th>Inscrito em</th><th></th></tr></thead><tbody>
+  ${DB.waitlist.map(w => `<tr><td><b>${esc(w.name)}</b></td><td>${esc(w.phone || '')}</td><td>${esc(profName(w.professional_id) || '—')}</td><td>${esc(w.preference || '')}</td><td>${fmtD(w.date)}</td>
+    <td class="acts"><button class="btn sm" data-act="done" data-id="${w.id}">Vaga ocupada</button>${hbtn('waitlist', w.id)}${ebtn('waitlist', w.id)}${dbtn('waitlist', w.id)}</td></tr>`).join('') || '<tr><td colspan="6" class="muted">Ninguém na lista de espera.</td></tr>'}
+  </tbody></table></div>`;
+
+V.caixa = () => {
+  const all = cashList();
+  const list = all.filter(c => caixaType === 'all' || c.type === caixaType);
+  const cs = cashStats(all);
+  return phead('Caixa e contas', 'Entradas, saídas, contas a pagar e recibos', `<button class="btn" data-act="new" data-ent="cash">+ Lançamento</button>`) +
+  filterBar(`<select onchange="caixaType=this.value;go()"><option value="all">Tudo</option><option value="entrada"${caixaType === 'entrada' ? ' selected' : ''}>Entradas</option><option value="saida"${caixaType === 'saida' ? ' selected' : ''}>Saídas</option></select>`) +
+  `<div class="kpis">${kpi('Saldo', fmt(cs.ent - cs.sai))}${kpi('Entradas', fmt(cs.ent))}${kpi('Saídas', fmt(cs.sai))}${kpi('A pagar', fmt(cs.pend))}</div>
+  <div class="tablewrap"><table><thead><tr><th>Data</th><th>Descrição</th><th>Situação</th><th class="num">Valor</th><th></th></tr></thead><tbody>${list.map(c => `<tr>
+     <td class="muted" style="white-space:nowrap">${fmtD(c.date)}</td>
+     <td><b>${esc(c.description || c.category)}</b><div class="muted small">${esc(c.category || '')}${c.status === 'pendente' && c.due_date ? ' · vence ' + fmtD(c.due_date) : ''}${c.payment_method ? ' · ' + esc(c.payment_method) : ''}</div></td>
+     <td>${c.status === 'pendente' ? '<span class="tag warn">pendente</span>' : c._appt ? '<span class="tag info">via agenda</span>' : '<span class="tag ok">pago</span>'}</td>
+     <td class="num ${c.type === 'entrada' ? 'pos' : 'neg'}">${c.type === 'entrada' ? '+' : '−'} ${fmt(c.amount)}</td>
+     <td class="acts noprint">${c.type === 'entrada' ? `<button class="btn ghost sm" data-act="recibo" data-id="${c.id}" data-appt="${c._appt ? 1 : 0}">Recibo</button>` : ''}${c._appt ? '' :
+       `${c.status === 'pendente' ? `<button class="btn sm" data-act="paid" data-id="${c.id}">Marcar pago</button>` : ''}${hbtn('cash', c.id)}${ebtn('cash', c.id)}${dbtn('cash', c.id)}`}</td>
+   </tr>`).join('') || '<tr><td colspan="5" class="muted">Nenhum lançamento no período.</td></tr>'}</tbody></table></div>`;
+};
+
+V.repasse = () => {
+  const appts = DB.appointments.filter(a => inP(a.date) && a.status === 'realizado');
+  const rows = DB.professionals.map(p => {
+    const s = summ(appts.filter(a => a.professional_id === p.id));
+    return { p, n: s.sessions, tb: s.tb + s.pc, fee: s.fee, tl: s.total, pct: p.commission || 0, rep: s.total * (p.commission || 0) / 100 };
+  });
+  const T = rows.reduce((t, r) => ({ tb: t.tb + r.tb, fee: t.fee + r.fee, tl: t.tl + r.tl, rep: t.rep + r.rep }), { tb: 0, fee: 0, tl: 0, rep: 0 });
+  return phead('Repasses às doutoras', `Base: sessões realizadas · taxa da clínica ${DB.settings.fee}% sobre convênios`, `<button class="btn ghost" onclick="window.print()">Imprimir</button>`) +
+  filterBar('') +
+  `<div class="tablewrap"><table><thead><tr><th>Doutora</th><th class="num">Sessões</th><th class="num">Total bruto</th><th class="num">Taxa clínica</th><th class="num">Total líquido</th><th class="num">Repasse</th><th class="num">A repassar</th></tr></thead><tbody>
+  ${rows.map(r => `<tr><td><b>${esc(r.p.name)}</b></td><td class="num">${r.n}</td><td class="num">${fmt(r.tb)}</td><td class="num">${fmt(r.fee)}</td><td class="num">${fmt(r.tl)}</td><td class="num">${r.pct}%</td><td class="num strong">${fmt(r.rep)}</td></tr>`).join('')}
+  <tr><td><b>Total</b></td><td class="num"><b>${rows.reduce((t, r) => t + r.n, 0)}</b></td><td class="num"><b>${fmt(T.tb)}</b></td><td class="num"><b>${fmt(T.fee)}</b></td><td class="num"><b>${fmt(T.tl)}</b></td><td></td><td class="num strong">${fmt(T.rep)}</td></tr>
+  </tbody></table></div><p class="muted small">O repasse é calculado sobre o total líquido de cada doutora. Ajuste o percentual em Doutoras.</p>`;
+};
+
+V.insumos = () => {
+  const val = DB.supplies.reduce((t, i) => t + (i.quantity || 0) * (i.unit_cost || 0), 0);
+  const low = DB.supplies.filter(i => stock(i) !== 'ok').length;
+  const hist = [...DB.movements].reverse().slice(0, 10);
+  return phead('Insumos', 'Estoque: limpeza, higiene, escritório e materiais', `<button class="btn" data-act="new" data-ent="supplies">+ Novo produto</button>`) +
+  (NOTICE ? `<div class="alert red">⚠ ${esc(NOTICE)}</div>` : '') +
+  `<div class="kpis">${kpi('Produtos', DB.supplies.length)}${kpi('Repor com urgência', low, '', low > 0)}${kpi('Valor em estoque', fmt(val))}</div>
+  <div class="tablewrap"><table><thead><tr><th>Produto</th><th>Categoria</th><th class="num">Estoque</th><th class="num">Mínimo</th><th></th></tr></thead><tbody>
+  ${[...DB.supplies].sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(i => { const st = stock(i); return `<tr>
+    <td><b>${esc(i.name)}</b><div class="muted small">${esc(i.supplier || '')}</div></td><td>${esc(i.category || '')}</td>
+    <td class="num ${st !== 'ok' ? 'neg' : 'strong'}">${st !== 'ok' ? '⚠ ' : ''}${i.quantity || 0} ${esc(i.unit || '')}</td><td class="num">${i.min_quantity || 0}</td>
+    <td class="acts"><button class="btn ghost sm" data-act="move" data-id="${i.id}" data-type="entrada">Entrada</button><button class="btn ghost sm" data-act="move" data-id="${i.id}" data-type="saida">Saída</button>${hbtn('supplies', i.id)}${ebtn('supplies', i.id)}${dbtn('supplies', i.id)}</td></tr>`; }).join('') || '<tr><td colspan="5" class="muted">Nenhum produto cadastrado.</td></tr>'}
+  </tbody></table></div>
+  <div class="panel"><h2>Últimas movimentações</h2>
+  ${hist.map(m => `<div class="prow"><span>${esc(m.supply_name)} · ${fmtD(m.date)}${m.note ? ' · ' + esc(m.note) : ''}</span>
+    <span><b class="${m.type === 'entrada' ? 'pos' : 'neg'}">${m.type === 'entrada' ? '+' : '−'}${m.quantity}</b>
+    <button class="btn danger sm noprint" data-act="delmove" data-id="${m.id}" style="margin-left:8px">Desfazer</button></span></div>`).join('') || '<div class="muted">Sem movimentações ainda.</div>'}</div>`;
+};
+
+V.historico = () => {
+  const ents = [['all','Todas as áreas'], ...ENT.map(e => [e, ENTLABEL[e]])];
+  const q = HQ.q.toLowerCase();
+  const list = DB.audit.filter(h => (HQ.ent === 'all' || h.ent === HQ.ent) && (!q || (h.label || '').toLowerCase().includes(q) || (h.action || '').toLowerCase().includes(q))).slice(0, 300);
+  return phead('Histórico', 'Registro de tudo o que foi criado, editado ou excluído no sistema') +
+  `<div class="row noprint"><select onchange="HQ.ent=this.value;go()">${ents.map(([v, l]) => `<option value="${v}"${HQ.ent === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
+   <input id="hq" placeholder="Filtrar por nome ou ação" value="${esc(HQ.q)}" oninput="HQ.q=this.value;go();$('#hq').focus()" style="min-width:260px"><span class="muted small">${list.length} registro(s)</span></div>
+   <div class="tablewrap"><table><thead><tr><th>Quando</th><th>Ação</th><th>Área</th><th>Registro</th><th>Alterações</th></tr></thead><tbody>
+   ${list.map(h => `<tr><td class="small muted" style="white-space:nowrap">${fmtTS(h.ts)}</td><td><span class="tag ${h.action === 'Criado' ? 'ok' : h.action === 'Excluído' ? 'bad' : 'info'}">${esc(h.action)}</span></td><td>${esc(ENTLABEL[h.ent] || h.ent)}</td><td><b>${esc(h.label)}</b></td>
+   <td class="small">${(h.changes || []).map(c => `${esc(c.field)}: <s class="neg" style="font-weight:400">${esc(c.from || '—')}</s> → <span class="pos">${esc(c.to || '—')}</span>`).join('<br>') || '<span class="muted">—</span>'}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Nenhum registro.</td></tr>'}
+   </tbody></table></div>`;
+};
+
+const nfStatus = s => s === 'lancada' ? '<span class="tag ok">lançada</span>' : s === 'cancelada' ? '<span class="tag bad">cancelada</span>' : '<span class="tag warn">pendente</span>';
+V.notas = () => {
+  const per = DB.invoices.filter(n => inP(n.emissao));
+  const list = per.filter(n => (NF.tipo === 'all' || n.tipo === NF.tipo) && (NF.st === 'all' || (NF.st === 'semanexo' ? !n.file : n.status === NF.st))).sort((a, b) => (b.emissao || '').localeCompare(a.emissao || ''));
+  const ativas = per.filter(n => n.status !== 'cancelada');
+  const sum = (arr, f) => arr.reduce((t, n) => t + (n[f] || 0), 0);
+  const entV = sum(ativas.filter(n => n.tipo === 'entrada'), 'valor'), saiV = sum(ativas.filter(n => n.tipo === 'saida'), 'valor');
+  const imp = sum(ativas, 'impostos');
+  const semAnexo = ativas.filter(n => !n.file).length;
+  const pendLanc = per.filter(n => n.status === 'pendente').length;
+  const months = F.month < 0 ? [...Array(12).keys()] : [F.month];
+  const mrows = months.map(m => {
+    const arr = DB.invoices.filter(n => n.emissao && +n.emissao.slice(0, 4) === F.year && +n.emissao.slice(5, 7) - 1 === m && n.status !== 'cancelada');
+    const com = arr.filter(n => n.file).length;
+    return `<tr><td>${MONTHS[m]}</td><td class="num">${arr.length}</td><td class="num">${com}</td><td class="num">${arr.length - com}</td><td class="num">${fmt(sum(arr.filter(n => n.tipo === 'entrada'), 'valor'))}</td><td class="num">${fmt(sum(arr.filter(n => n.tipo === 'saida'), 'valor'))}</td><td class="num">${fmt(sum(arr, 'impostos'))}</td></tr>`;
+  }).join('');
+  return phead('Notas fiscais', 'Controle de notas de entrada e saída, anexos e impostos', `<button class="btn" data-act="new" data-ent="invoices">+ Nova nota</button>`) +
+  filterBar(`<select onchange="NF.tipo=this.value;go()">${[['all','Entradas e saídas'],['entrada','Entradas'],['saida','Saídas']].map(([v, l]) => `<option value="${v}"${NF.tipo === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
+  <select onchange="NF.st=this.value;go()">${[['all','Todas as situações'],['lancada','Lançadas'],['pendente','Pendentes de lançamento'],['cancelada','Canceladas'],['semanexo','Sem anexo']].map(([v, l]) => `<option value="${v}"${NF.st === v ? ' selected' : ''}>${l}</option>`).join('')}</select>`) +
+  `<div class="kpis">${kpi('Entradas', fmt(entV), ativas.filter(n => n.tipo === 'entrada').length + ' notas')}${kpi('Saídas', fmt(saiV), ativas.filter(n => n.tipo === 'saida').length + ' notas')}${kpi('Impostos retidos', fmt(imp))}${kpi('Sem anexo', semAnexo, 'notas sem arquivo', semAnexo > 0)}${kpi('Pendentes de lançamento', pendLanc, '', pendLanc > 0)}</div>
+  <div class="tablewrap"><table><thead><tr><th>Emissão</th><th>Tipo</th><th>Nº / série</th><th>Emitente / destinatário</th><th class="num">Valor</th><th class="num">Impostos</th><th>Situação</th><th>Anexo</th><th></th></tr></thead><tbody>
+  ${list.map(n => `<tr>
+    <td>${fmtD(n.emissao)}</td>
+    <td>${n.tipo === 'entrada' ? '<span class="tag info">Entrada</span>' : '<span class="tag ok">Saída</span>'}</td>
+    <td><b>${esc(n.numero)}</b>${n.serie ? `<div class="muted small">série ${esc(n.serie)}</div>` : ''}</td>
+    <td>${esc(n.parte)}<div class="muted small">${esc(n.documento || '')}${n.categoria ? ' · ' + esc(n.categoria) : ''}</div></td>
+    <td class="num">${fmt(n.valor)}</td><td class="num">${n.impostos ? fmt(n.impostos) : '—'}</td>
+    <td>${nfStatus(n.status)}</td>
+    <td>${n.file ? `<button class="btn ghost sm" data-act="anexo" data-id="${n.id}" title="Baixar anexo">📎 ${esc(n.file.name)}</button>` : '<span class="tag warn">sem anexo</span>'}</td>
+    <td class="acts">${hbtn('invoices', n.id)}${ebtn('invoices', n.id)}${dbtn('invoices', n.id)}</td></tr>`).join('') || '<tr><td colspan="9" class="muted">Nenhuma nota no período.</td></tr>'}
+  </tbody></table></div>
+  <h2>Controle mensal</h2>
+  <div class="tablewrap"><table><thead><tr><th>Mês</th><th class="num">Notas</th><th class="num">Com anexo</th><th class="num">Sem anexo</th><th class="num">Entradas</th><th class="num">Saídas</th><th class="num">Impostos</th></tr></thead><tbody>${mrows}</tbody></table></div>`;
+};
+
+V.config = () => { const s = DB.settings; return phead('Configurações', 'Dados da clínica usados em recibos e cálculos') +
+  `<div class="panel"><form onsubmit="saveSettings(event)" class="form" style="max-width:720px">
+    <label class="full">Nome da clínica<input name="clinicName" value="${esc(s.clinicName)}"></label>
+    <label>CNPJ<input name="cnpj" value="${esc(s.cnpj)}"></label>
+    <label>Taxa da clínica sobre convênios (%)<input name="fee" type="number" step="0.1" value="${s.fee}"></label>
+    <label class="full">Endereço<input name="address" value="${esc(s.address)}"></label>
+    <div class="full row" style="justify-content:flex-end;margin:0"><button class="btn">Salvar configurações</button></div>
+  </form></div>`; };
+function saveSettings(e) {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  const old = DB.settings, neu = { clinicName: f.get('clinicName'), cnpj: f.get('cnpj'), address: f.get('address'), fee: Number(f.get('fee')) || 0 };
+  const ch = diffs(old, neu);
+  DB.settings = neu;
+  if (ch.length) DB.audit.unshift({ id: uid(), ts: new Date().toISOString(), ent: 'settings', rid: 'settings', label: 'Configurações', action: 'Editado', changes: ch });
+  go();
+}
+
+/* ============ formulários ============ */
+function openForm(title, fields, init, onSave, hook) {
+  const f = $('#mForm'); init = init || {};
+  $('#mTitle').textContent = title;
+  f.innerHTML = fields.map(fd => {
+    const v = init[fd.name] ?? '';
+    let inp;
+    if (fd.type === 'select') inp = `<select name="${fd.name}"><option value="">Selecione</option>${fd.options.map(o => { const val = typeof o === 'string' ? o : o.value, lab = typeof o === 'string' ? o : o.label; return `<option value="${esc(val)}"${String(v) === String(val) ? ' selected' : ''}>${esc(lab)}</option>`; }).join('')}</select>`;
+    else if (fd.type === 'file') inp = `<input type="file" name="${fd.name}" accept="${esc(fd.accept || '')}">${v && v.name ? `<span class="muted small" style="text-transform:none;letter-spacing:0">Anexo atual: ${esc(v.name)} · deixe em branco para manter</span>` : ''}`;
+    else if (fd.type === 'textarea') inp = `<textarea name="${fd.name}">${esc(v)}</textarea>`;
+    else inp = `<input name="${fd.name}" type="${fd.type || 'text'}"${fd.type === 'number' ? ' step="0.01"' : ''}${fd.required ? ' required' : ''} value="${esc(v)}">`;
+    return `<label class="${fd.full ? 'full' : ''}">${fd.label}${inp}</label>`;
+  }).join('') + `<div class="full row" style="justify-content:flex-end;margin:6px 0 0"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn">Salvar</button></div>`;
+  f.onchange = e => {
+    if (!hook || !e.target.name) return;
+    const patch = hook(e.target.name, Object.fromEntries(new FormData(f))) || {};
+    for (const k in patch) { const el = f.elements[k]; if (el && patch[k] !== undefined) el.value = patch[k]; }
+  };
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(f));
+    fields.forEach(fd => { if (fd.type === 'number') d[fd.name] = d[fd.name] === '' ? undefined : Number(d[fd.name]); });
+    for (const fd of fields.filter(x => x.type === 'file')) {
+      const file = d[fd.name]; delete d[fd.name];
+      if (file && file.size) {
+        if (file.size > 3 * 1024 * 1024) { alert('Arquivo acima de 3 MB. Reduza o arquivo e tente novamente.'); return; }
+        d.file = { name: file.name, type: file.type, data: await readAsDataURL(file) };
+      } else if (init.file) d.file = init.file;
+    }
+    closeModal(); onSave(d);
+  };
+  $('#modal').classList.add('open');
+}
+function closeModal() { $('#modal').classList.remove('open'); }
+const names = ent => DB[ent].map(r => r.name).sort();
+const readAsDataURL = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+
+const FORMS = {
+  professionals: x => openForm(x ? 'Editar doutora' : 'Nova doutora', [
+    { name: 'name', label: 'Nome', required: 1, full: 1 }, { name: 'specialty', label: 'Especialidade' }, { name: 'crp', label: 'CRP' },
+    { name: 'phone', label: 'Telefone' }, { name: 'email', label: 'E-mail' }, { name: 'weekdays', label: 'Dias de atendimento' },
+    { name: 'commission', label: 'Repasse (%)', type: 'number' },
+    { name: 'active', label: 'Disponível', type: 'select', options: [{ value: 'true', label: 'Sim' }, { value: 'false', label: 'Não' }] }
+  ], x ? { ...x, active: String(x.active !== false) } : { active: 'true', commission: 50 },
+  d => save('professionals', { ...(x || {}), ...d, active: d.active !== 'false' }) && go()),
+
+  patients: x => openForm(x ? 'Editar paciente' : 'Novo paciente', [
+    { name: 'name', label: 'Nome do paciente', required: 1, full: 1 }, { name: 'cpf', label: 'CPF' }, { name: 'birth', label: 'Nascimento', type: 'date' },
+    { name: 'phone', label: 'Telefone' }, { name: 'email', label: 'E-mail' }, { name: 'responsible', label: 'Responsável (menor de idade)' },
+    { name: 'payer_type', label: 'Tipo', type: 'select', options: PAY },
+    { name: 'insurer', label: 'Convênio', type: 'select', options: names('insurers') },
+    { name: 'card_number', label: 'Carteirinha' }, { name: 'session_value', label: 'Valor da sessão (R$)', type: 'number' },
+    { name: 'professional_name', label: 'Doutora responsável', type: 'select', options: names('professionals') },
+    { name: 'status', label: 'Status', type: 'select', options: PSTATUS },
+    { name: 'consent', label: 'Termo assinado', type: 'select', options: [{ value: 'true', label: 'Sim' }, { value: 'false', label: 'Não' }] },
+    { name: 'anamnese', label: 'Anamnese / queixa inicial', type: 'textarea', full: 1 },
+    { name: 'notes', label: 'Observações gerais', type: 'textarea', full: 1 }
+  ], x ? { ...x, consent: String(!!x.consent), status: x.status || 'ativo' } : { payer_type: 'convenio', status: 'ativo', consent: 'false' },
+  d => save('patients', { ...(x || {}), ...d, consent: d.consent === 'true' }) && go()),
+
+  evolutions: (x, pid) => {
+    const p = byId('patients', x ? x.patient_id : pid);
+    openForm(x ? 'Editar evolução' : 'Nova evolução · ' + (p ? p.name : ''), [
+      { name: 'date', label: 'Data', type: 'date', required: 1 },
+      { name: 'professional_name', label: 'Doutora', type: 'select', options: names('professionals') },
+      { name: 'text', label: 'Registro da sessão (sigiloso)', type: 'textarea', required: 1, full: 1 }
+    ], x || { date: today() },
+    d => { save('evolutions', { ...(x || {}), ...d, patient_id: p.id, patient_name: p.name }); go(); });
+  },
+
+  appointments: x => {
+    const base = [
+      { name: 'date', label: 'Data', type: 'date', required: 1 }, { name: 'time', label: 'Horário', type: 'time' },
+      { name: 'patient_name', label: 'Paciente', type: 'select', options: names('patients'), full: 1 },
+      { name: 'professional_id', label: 'Doutora', type: 'select', options: DB.professionals.map(p => ({ value: p.id, label: p.name })), full: 1 },
+      { name: 'service', label: 'Atendimento', type: 'select', options: SERVICES },
+      { name: 'payer_type', label: 'Tipo', type: 'select', options: PAY },
+      { name: 'insurer', label: 'Convênio', type: 'select', options: names('insurers') }, { name: 'guide_number', label: 'Nº da guia' },
+      { name: 'value', label: 'Valor (R$)', type: 'number' },
+      { name: 'status', label: 'Situação', type: 'select', options: STATUS },
+      { name: 'notes', label: 'Observações', full: 1 }
+    ];
+    const fields = x ? base : [...base, { name: 'repeat', label: 'Repetir semanalmente (nº de sessões)', type: 'number' }];
+    openForm(x ? 'Editar atendimento' : 'Novo atendimento', fields,
+      x || { date: agendaDay, status: 'agendado', payer_type: 'convenio', service: 'Psicoterapia', repeat: 1 },
+      d => {
+        const n = x ? 1 : Math.max(1, Number(d.repeat) || 1);
+        const { repeat, ...rest } = d;
+        for (let i = 0; i < n; i++) {
+          const pr = DB.professionals.find(p => p.id === rest.professional_id);
+          const rec = { ...(x || {}), ...rest, date: addDays(rest.date, 7 * i), professional_name: pr ? pr.name : '' };
+          if (!x) delete rec.id;
+          save('appointments', rec);
+        }
+        go();
+      },
+      (name, d) => {
+        if (name !== 'patient_name') return null;
+        const p = DB.patients.find(q => q.name === d.patient_name); if (!p) return null;
+        const pr = DB.professionals.find(q => q.name === p.professional_name);
+        const patch = { payer_type: p.payer_type || 'convenio' };
+        if (p.session_value != null) patch.value = p.session_value;
+        if (p.insurer) patch.insurer = p.insurer;
+        if (pr) patch.professional_id = pr.id;
+        return patch;
+      });
+  },
+
+  insurers: x => openForm(x ? 'Editar convênio' : 'Novo convênio', [
+    { name: 'name', label: 'Nome do convênio', required: 1, full: 1 },
+    { name: 'deadline_days', label: 'Prazo de pagamento (dias)', type: 'number' }, { name: 'contact', label: 'Contato' }
+  ], x || { deadline_days: 30 }, d => { save('insurers', { ...(x || {}), ...d }); go(); }),
+
+  guides: x => openForm(x ? 'Editar guia' : 'Nova guia', [
+    { name: 'number', label: 'Nº da guia', required: 1 }, { name: 'patient_name', label: 'Paciente', type: 'select', options: names('patients') },
+    { name: 'insurer', label: 'Convênio', type: 'select', options: names('insurers') }, { name: 'date', label: 'Emissão', type: 'date' },
+    { name: 'validity', label: 'Validade', type: 'date' }, { name: 'authorized', label: 'Sessões autorizadas', type: 'number' },
+    { name: 'notes', label: 'Observações', full: 1 }
+  ], x || { date: today() }, d => { save('guides', { ...(x || {}), ...d }); go(); }),
+
+  waitlist: x => openForm(x ? 'Editar espera' : 'Inscrever na lista de espera', [
+    { name: 'name', label: 'Nome', required: 1, full: 1 }, { name: 'phone', label: 'Telefone' },
+    { name: 'professional_id', label: 'Doutora preferida', type: 'select', options: DB.professionals.map(p => ({ value: p.id, label: p.name })) },
+    { name: 'preference', label: 'Dias/horários preferidos' }, { name: 'date', label: 'Inscrito em', type: 'date' },
+    { name: 'notes', label: 'Observações', type: 'textarea', full: 1 }
+  ], x || { date: today() }, d => { save('waitlist', { ...(x || {}), ...d }); go(); }),
+
+  cash: x => openForm(x ? 'Editar lançamento' : 'Novo lançamento', [
+    { name: 'type', label: 'Tipo', type: 'select', options: [{ value: 'entrada', label: 'Entrada' }, { value: 'saida', label: 'Saída' }] },
+    { name: 'status', label: 'Situação', type: 'select', options: [{ value: 'pago', label: 'Pago / recebido' }, { value: 'pendente', label: 'Pendente (conta a pagar)' }] },
+    { name: 'description', label: 'Descrição', full: 1 }, { name: 'category', label: 'Categoria', type: 'select', options: CATS },
+    { name: 'payer', label: 'Recebido de / pago a' },
+    { name: 'amount', label: 'Valor (R$)', type: 'number', required: 1 },
+    { name: 'payment_method', label: 'Forma', type: 'select', options: ['Pix','Dinheiro','Cartão','Boleto','Transferência'] },
+    { name: 'date', label: 'Data', type: 'date', required: 1 }, { name: 'due_date', label: 'Vencimento', type: 'date' }
+  ], x || { type: 'entrada', status: 'pago', date: today() },
+  d => { save('cash', { ...(x || {}), ...d }); go(); }),
+
+  invoices: x => openForm(x ? 'Editar nota fiscal' : 'Nova nota fiscal', [
+    { name: 'tipo', label: 'Tipo', type: 'select', options: [{ value: 'entrada', label: 'Entrada (compra / recebida)' }, { value: 'saida', label: 'Saída (venda / serviço emitido)' }] },
+    { name: 'numero', label: 'Nº da nota', required: 1 }, { name: 'serie', label: 'Série' },
+    { name: 'chave', label: 'Chave de acesso (44 dígitos)', full: 1 },
+    { name: 'emissao', label: 'Data de emissão', type: 'date', required: 1 },
+    { name: 'parte', label: 'Emitente / destinatário', required: 1 },
+    { name: 'documento', label: 'CNPJ / CPF' },
+    { name: 'valor', label: 'Valor total (R$)', type: 'number', required: 1 },
+    { name: 'impostos', label: 'Impostos retidos (R$)', type: 'number' },
+    { name: 'categoria', label: 'Categoria', type: 'select', options: CATS },
+    { name: 'status', label: 'Situação', type: 'select', options: [{ value: 'lancada', label: 'Lançada no caixa' }, { value: 'pendente', label: 'Pendente de lançamento' }, { value: 'cancelada', label: 'Cancelada' }] },
+    { name: 'anexo', label: 'Anexo (PDF, XML ou imagem · até 3 MB)', type: 'file', accept: '.pdf,.xml,.jpg,.jpeg,.png', full: 1 },
+    { name: 'observacoes', label: 'Observações', type: 'textarea', full: 1 }
+  ], x ? { ...x, anexo: x.file } : { tipo: 'entrada', status: 'pendente', emissao: today() },
+  d => { save('invoices', { ...(x || {}), ...d }); go(); }),
+
+  supplies: x => openForm(x ? 'Editar produto' : 'Novo produto', [
+    { name: 'name', label: 'Produto', required: 1, full: 1 },
+    { name: 'category', label: 'Categoria', type: 'select', options: SUP_CATS }, { name: 'unit', label: 'Unidade (un, L, cx)' },
+    { name: 'quantity', label: 'Quantidade atual', type: 'number' }, { name: 'min_quantity', label: 'Estoque mínimo', type: 'number' },
+    { name: 'unit_cost', label: 'Custo unitário (R$)', type: 'number' }, { name: 'supplier', label: 'Fornecedor' }
+  ], x || { category: 'Limpeza', unit: 'un', quantity: 0, min_quantity: 0 },
+  d => { save('supplies', { ...(x || {}), ...d }); go(); })
+};
+
+function MOVE(id, type) {
+  const s = byId('supplies', id); if (!s) return;
+  openForm(`${type === 'entrada' ? 'Entrada' : 'Saída'}: ${s.name}`, [
+    { name: 'quantity', label: 'Quantidade', type: 'number', required: 1 }, { name: 'date', label: 'Data', type: 'date' },
+    { name: 'note', label: 'Observação', full: 1 }
+  ], { date: today() }, d => {
+    const q = Number(d.quantity) || 0;
+    const nq = Math.max(0, (s.quantity || 0) + (type === 'entrada' ? q : -q));
+    const mv = { id: uid(), supply_id: id, supply_name: s.name, type, quantity: q, date: d.date || today(), note: d.note || '' };
+    DB.movements.push(mv);
+    audit('movements', type === 'entrada' ? 'Entrada' : 'Saída', { ...mv, id: mv.id }, []);
+    save('supplies', { ...s, quantity: nq }, true);
+    audit('supplies', 'Movimentado', s, [{ field: 'quantidade', from: s.quantity, to: nq }]);
+    NOTICE = stockAlert(s, nq) || null;
+    go();
+  });
+}
+function DELMOVE(id) {
+  const m = byId('movements', id); if (!m) return;
+  const s = byId('supplies', m.supply_id);
+  if (s) save('supplies', { ...s, quantity: Math.max(0, (s.quantity || 0) + (m.type === 'entrada' ? -m.quantity : m.quantity)) }, true);
+  removeRec('movements', id);
+  go();
+}
+function setStatus(id, v) { const a = byId('appointments', id); if (a) { save('appointments', { ...a, status: v }); go(); } }
+function shiftDay(n) { agendaDay = addDays(agendaDay, n); go(); }
+
+/* ============ recibo ============ */
+function recibo(c) {
+  const s = DB.settings;
+  const w = window.open('', '_blank', 'width=780,height=620');
+  if (!w) { alert('Permita pop-ups para imprimir o recibo.'); return; }
+  w.document.write(`<html><head><meta charset="utf-8"><title>Recibo</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#111}h1{font-size:20px;margin:0 0 6px}table{width:100%;border-collapse:collapse;margin-top:22px}td{border:1px solid #888;padding:10px;font-size:14px}td:first-child{width:180px;background:#f3f3f3;font-weight:bold}.ass{margin-top:70px;border-top:1px solid #111;width:320px;text-align:center;padding-top:6px;font-size:13px}</style></head><body>
+  <h1>RECIBO</h1><div style="font-size:13px">${esc(s.clinicName)} · CNPJ ${esc(s.cnpj)}<br>${esc(s.address)}</div>
+  <table><tr><td>Recebemos de</td><td>${esc(c.payer || '')}</td></tr><tr><td>Valor</td><td>${fmt(c.amount)}</td></tr>
+  <tr><td>Referente a</td><td>${esc(c.description || c.category || '')}</td></tr><tr><td>Forma de pagamento</td><td>${esc(c.payment_method || '')}</td></tr>
+  <tr><td>Data</td><td>${fmtD(c.date)}</td></tr></table>
+  <div class="ass">${esc(s.clinicName)}</div><script>window.onload=function(){window.print()}<\/script></body></html>`);
+  w.document.close();
+}
+
+/* ============ planilha (Excel / Sheets) ============ */
+const xesc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function cellXML(v) {
+  if (v === undefined || v === null) v = '';
+  if (typeof v === 'number') return `<Cell><Data ss:Type="Number">${v}</Data></Cell>`;
+  return `<Cell><Data ss:Type="String">${xesc(typeof v === 'boolean' ? String(v) : (typeof v === 'object' ? JSON.stringify(v) : v))}</Data></Cell>`;
+}
+function exportXLS() {
+  const ns = 'urn:schemas-microsoft-com:office:spreadsheet';
+  const sheets = Object.entries(SCHEMA).map(([ent, sc]) => {
+    const head = `<Row>${sc.cols.map(c => `<Cell ss:StyleID="h"><Data ss:Type="String">${xesc(c)}</Data></Cell>`).join('')}</Row>`;
+    const src = ent === 'audit' ? DB.audit : DB[ent];
+    const rows = src.map(r => `<Row>${sc.cols.map(c => cellXML(c === 'changes' ? (r.changes || []).map(x => `${x.field}: ${x.from} -> ${x.to}`).join(' | ') : c === 'anexo_nome' ? (r.file ? r.file.name : '') : r[c])).join('')}</Row>`).join('');
+    return `<Worksheet ss:Name="${xesc(sc.sheet)}"><Table>${head}${rows}</Table></Worksheet>`;
+  });
+  const cfg = `<Worksheet ss:Name="Config"><Table><Row><Cell ss:StyleID="h"><Data ss:Type="String">chave</Data></Cell><Cell ss:StyleID="h"><Data ss:Type="String">valor</Data></Cell></Row>${Object.entries(DB.settings).map(([k, v]) => `<Row>${cellXML(k)}${cellXML(v)}</Row>`).join('')}</Table></Worksheet>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="${ns}" xmlns:ss="${ns}"><Styles><Style ss:ID="h"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1B3B6F" ss:Pattern="Solid"/></Style></Styles>${sheets.join('')}${cfg}</Workbook>`;
+  download(new Blob([xml], { type: 'application/vnd.ms-excel' }), 'ALB-CLIN-backup.xls');
+}
+async function importXLS(file) {
+  const doc = new DOMParser().parseFromString(await file.text(), 'text/xml');
+  const ns = 'urn:schemas-microsoft-com:office:spreadsheet';
+  const wss = [...doc.getElementsByTagNameNS(ns, 'Worksheet')];
+  const rowsOf = ws => [...ws.getElementsByTagNameNS(ns, 'Row')].map(row => [...row.getElementsByTagNameNS(ns, 'Data')].map(d => d.textContent));
+  const next = {};
+  for (const [ent, sc] of Object.entries(SCHEMA)) {
+    if (ent === 'audit') continue;
+    const ws = wss.find(w => w.getAttributeNS(ns, 'Name') === sc.sheet); if (!ws) continue;
+    next[ent] = rowsOf(ws).slice(1).map(vals => {
+      const o = {};
+      sc.cols.forEach((c, i) => {
+        let v = vals[i] ?? '';
+        if ((sc.bool || []).includes(c)) v = v === 'true';
+        else if (sc.num.includes(c)) v = v === '' ? undefined : Number(v);
+        o[c] = v === '' ? undefined : v;
+      });
+      return o;
+    }).filter(o => o.id);
+  }
+  const cfg = wss.find(w => w.getAttributeNS(ns, 'Name') === 'Config');
+  if (cfg) {
+    const s = { ...DB.settings };
+    rowsOf(cfg).slice(1).forEach(([k, v]) => { if (k) s[k] = k === 'fee' ? Number(v) : v; });
+    DB.settings = s;
+  }
+  if (!Object.keys(next).length) throw new Error('Planilha sem as abas do ALB CLIN.');
+  const hist = wss.find(w => w.getAttributeNS(ns, 'Name') === SCHEMA.audit.sheet);
+  const oldAudit = DB.audit;
+  DB = { ...DB, ...next };
+  DB.audit = oldAudit;
+  if (hist) {
+    const imp = rowsOf(hist).slice(1).map(v => ({ id: v[0], ts: v[1], ent: v[2], rid: v[3], label: v[4], action: v[5], changes: [] })).filter(h => h.id);
+    const ids = new Set(oldAudit.map(h => h.id));
+    DB.audit = [...oldAudit, ...imp.filter(h => !ids.has(h.id))];
+  }
+  go();
+}
+function download(blob, name) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+}
+
+/* ============ dados de exemplo (fictícios) ============ */
+function seed() {
+  const T = today();
+  DB = emptyDB();
+  const profs = [
+    { name: 'Dra. Mariana Oliveira', specialty: 'Psicologia Clínica', crp: '06/123456', phone: '(11) 98765-4321', email: 'mariana@albclin.com.br', weekdays: 'Seg, Qua, Sex', commission: 50, active: true },
+    { name: 'Dra. Renata Souza', specialty: 'ABA', crp: '06/234567', phone: '(11) 97654-3210', email: 'renata@albclin.com.br', weekdays: 'Ter, Qui', commission: 45, active: true },
+    { name: 'Dr. Thiago Nunes', specialty: 'Neuropsicologia', crp: '06/345678', phone: '(11) 96543-2109', email: 'thiago@albclin.com.br', weekdays: 'Seg a Qui', commission: 50, active: true },
+    { name: 'Dra. Patrícia Lemos', specialty: 'Psicoterapia', crp: '06/456789', phone: '(11) 95432-1098', email: 'patricia@albclin.com.br', weekdays: 'Sex, Sáb', commission: 40, active: false }
+  ];
+  profs.forEach(p => save('professionals', p, true));
+  [['Unimed', 30, 'Ana Lúcia · (11) 3000-1001'], ['Bradesco Saúde', 45, 'Carlos · (11) 3000-1002'], ['Amil', 60, 'Fernanda · (11) 3000-1003'], ['SulAmérica', 30, 'Rafael · (11) 3000-1004'], ['Intermédica', 60, 'Juliana · (11) 3000-1005'], ['Care Plus', 30, 'Paulo · (11) 3000-1006']]
+    .forEach(([name, deadline_days, contact]) => save('insurers', { name, deadline_days, contact }, true));
+  const names12 = ['Ana Paula Ribeiro','Bruno Almeida','Carla Mendes','Diego Ferreira','Elisa Monteiro','Felipe Costa','Gabriela Lima','Henrique Dias','Isabela Rocha','João Pedro Santos','Karina Alves','Lucas Teixeira'];
+  const ins = ['Unimed','Bradesco Saúde','Amil','SulAmérica','Intermédica','Care Plus'];
+  names12.forEach((n, i) => {
+    const particular = i % 4 === 3, pr = DB.professionals[i % 3];
+    save('patients', { name: n, cpf: `123.456.${String(100 + i)}-0${i % 9}`, birth: `19${80 + (i % 20)}-0${1 + (i % 9)}-1${i % 9}`,
+      phone: `(11) 9${8100 + i}-${4000 + i * 7}`, email: n.split(' ')[0].toLowerCase() + '@exemplo.com', responsible: i % 5 === 0 ? 'Maria ' + n.split(' ').slice(-1) : '',
+      payer_type: particular ? 'particular' : 'convenio', insurer: particular ? '' : ins[i % ins.length], card_number: String(100200300 + i * 17),
+      session_value: particular ? 250 : [180, 160, 200][i % 3], professional_name: pr.name, status: i === 7 ? 'pausa' : 'ativo',
+      consent: i % 3 !== 0, anamnese: 'Queixa inicial: ansiedade e dificuldades de sono. (exemplo)', notes: '' }, true);
+  });
+  DB.patients.forEach((p, i) => {
+    if (i % 3 === 1) save('evolutions', { patient_id: p.id, patient_name: p.name, date: addDays(T, -14), professional_name: p.professional_name, text: 'Paciente relata melhora na qualidade do sono. Trabalhadas técnicas de respiração. (registro de exemplo)' }, true);
+  });
+  let k = 0;
+  for (let d = -75; d <= 5; d++) {
+    const day = addDays(T, d), wd = new Date(day + 'T12:00:00').getDay();
+    if (wd === 0 || wd === 6) continue;
+    for (let j = 0; j < 3; j++) {
+      k++;
+      const p = DB.patients[(k * 5 + j * 3) % DB.patients.length];
+      const pr = DB.professionals.find(x => x.name === p.professional_name);
+      const time = `${String(8 + ((k + j) % 9)).padStart(2, '0')}:${j % 2 ? '30' : '00'}`;
+      const status = d > 0 ? (k % 2 ? 'confirmado' : 'agendado') : (k % 11 === 0 ? 'faltou' : k % 17 === 0 ? 'cancelado' : 'realizado');
+      save('appointments', { date: day, time, patient_name: p.name, professional_id: pr.id, professional_name: pr.name,
+        service: pr.specialty === 'ABA' ? 'ABA' : SERVICES[k % 3], payer_type: p.payer_type, insurer: p.insurer,
+        guide_number: p.payer_type === 'convenio' ? 'G' + (40000 + k) : '', value: p.session_value, status, notes: '' }, true);
+    }
+  }
+  DB.patients.filter(p => p.payer_type === 'convenio').slice(0, 4).forEach((p, i) => {
+    save('guides', { number: 'G' + (40000 + i * 3 + 1), patient_name: p.name, insurer: p.insurer, date: addDays(T, -40), validity: addDays(T, i === 0 ? 5 : 120), authorized: i === 0 ? 4 : 12, notes: '' }, true);
+  });
+  save('waitlist', { name: 'Pedro Henrique Vidal', phone: '(11) 99911-2233', professional_id: DB.professionals[0].id, preference: 'Qui à tarde', date: addDays(T, -9), notes: '' }, true);
+  save('waitlist', { name: 'Sofia Martins', phone: '(11) 99922-3344', professional_id: DB.professionals[1].id, preference: 'Ter de manhã', date: addDays(T, -3), notes: 'Criança · 7 anos' }, true);
+  const C = [
+    ['saida','Aluguel','Aluguel da sala',3200,-60,'pago','Transferência'],
+    ['saida','Aluguel','Aluguel da sala',3200,-30,'pago','Transferência'],
+    ['saida','Aluguel','Aluguel da sala',3200,5,'pendente','Boleto'],
+    ['saida','Salários','Folha da equipe administrativa',4800,-30,'pago','Transferência'],
+    ['saida','Energia','Conta de energia',640.35,-12,'pago','Boleto'],
+    ['saida','Internet','Plano empresarial',219.9,-8,'pago','Cartão'],
+    ['saida','Impostos','DAS Simples Nacional',512.8,4,'pendente','Boleto'],
+    ['saida','Software / sistemas','Assinatura de prontuário eletrônico',189,-2,'pendente','Cartão'],
+    ['entrada','Repasse de convênio','Repasse Unimed - lote',7340,-20,'pago','Transferência'],
+    ['entrada','Venda de produtos','Venda de kit de avaliação',180,-9,'pago','Pix'],
+    ['saida','Marketing','Anúncios em redes sociais',350,-3,'pago','Cartão'],
+    ['saida','Cursos e supervisão','Supervisão clínica mensal',600,-5,'pago','Pix']
+  ];
+  C.forEach(([type, category, description, amount, off, status, pm]) =>
+    save('cash', { type, category, description, amount, date: addDays(T, off), due_date: status === 'pendente' ? addDays(T, off) : '', status, payer: '', payment_method: pm }, true));
+  const S = [
+    ['Álcool 70%','Limpeza','L',4,6,18.9,'Distribuidora Central'], ['Papel toalha','Higiene','cx',2,4,42,'Atacado Brasil'],
+    ['Sabonete líquido','Higiene','un',12,6,9.5,'Atacado Brasil'], ['Papel A4','Escritório','cx',9,3,24.9,'Papelaria Ideal'],
+    ['Canetas esferográficas','Escritório','cx',1,2,15.4,'Papelaria Ideal'], ['Jogo de estímulo lúdico','Material terapêutico','un',5,2,89.9,'Terapia Store'],
+    ['Copo descartável','Copa','pct',8,3,11.2,'Atacado Brasil'], ['Água mineral 500 ml','Copa','fd',6,2,22.5,'Distribuidora Central']
+  ];
+  S.forEach(([name, category, unit, quantity, min_quantity, unit_cost, supplier]) => save('supplies', { name, category, unit, quantity, min_quantity, unit_cost, supplier }, true));
+  [[0, 'entrada', 4, 'Compra mensal', -10], [1, 'saida', 2, 'Uso na sala 2', -4], [4, 'saida', 1, 'Uso em oficina', -2]].forEach(([i, type, q, note, off]) => {
+    const s = DB.supplies[i];
+    DB.movements.push({ id: uid(), supply_id: s.id, supply_name: s.name, type, quantity: q, date: addDays(T, off), note });
+  });
+  [['entrada','1204','Distribuidora Central Ltda','12.345.678/0001-90',512.4,'Materiais de limpeza e copa','lancada',1],
+   ['entrada','88321','Papelaria Ideal ME','98.765.432/0001-10',299.8,'Material de escritório','pendente',0],
+   ['saida','45','Unimed (repasse de convênio)','00.000.000/0001-00',7340,'Repasse de convênio','lancada',1],
+   ['saida','46','Maria Helena Lopes (fictícia)','123.456.789-00',1200,'Consultas particulares','lancada',0],
+   ['saida','47','Empresa Cliente Ltda','11.222.333/0001-44',480,'Consultas particulares','pendente',1]
+  ].forEach(([tipo, numero, parte, documento, valor, categoria, status, anex], i) => save('invoices', {
+    tipo, numero, serie: '1', chave: '', emissao: addDays(T, -5 - i * 4), parte, documento, valor,
+    impostos: tipo === 'saida' ? Math.round(valor * 0.06 * 100) / 100 : 0, categoria, status, observacoes: '',
+    file: anex ? { name: `NF-${numero}.txt`, type: 'text/plain', data: 'data:text/plain;charset=utf-8,' + encodeURIComponent('Arquivo de exemplo (fictício)') } : undefined
+  }, true));
+  DB.audit = [];
+  DB.patients.slice(0, 3).forEach(p => audit('patients', 'Criado', p));
+}
+
+/* ============ navegação e eventos ============ */
+function renderNav() {
+  const groups = { 1: 'nav1', 2: 'nav2', 3: 'nav3', 4: 'nav4' };
+  for (const g in groups) {
+    $('#' + groups[g]).innerHTML = NAV.filter(n => n[3] == g).map(([k, l, ic]) =>
+      `<a href="#${k}" class="${(cur === k || (cur === 'ficha' && k === 'pacientes')) ? 'on' : ''}"><span class="ic">${ic}</span>${l}</a>`).join('');
+  }
+}
+function logoUI() {
+  const img = $('#logoImg'), hint = $('#logoHint');
+  if (img.complete && img.naturalWidth === 0) LOGO = 'missing';
+  const show = LOGO === 'file';
+  img.style.display = show ? 'block' : 'none';
+  hint.style.display = show ? 'none' : 'block';
+}
+function logoMissing() { LOGO = 'missing'; logoUI(); }
+function globalSearch(q) {
+  q = q.trim().toLowerCase();
+  if (!q) return;
+  const p = DB.patients.find(x => x.name.toLowerCase().includes(q));
+  if (p) { FICHA = p.id; FTAB = 'dados'; location.hash = '#ficha'; return; }
+  const d = DB.professionals.find(x => x.name.toLowerCase().includes(q));
+  if (d) { location.hash = '#doutoras'; return; }
+  const c = DB.insurers.find(x => x.name.toLowerCase().includes(q));
+  if (c) location.hash = '#convenios';
+}
+function go() {
+  cur = (location.hash || '#painel').slice(1); if (!V[cur]) cur = 'painel';
+  const crumbKey = cur === 'ficha' ? 'pacientes' : cur;
+  $('#crumb').innerHTML = `ALB CLIN &nbsp;/&nbsp; <b style="color:var(--fg)">${esc(TITLE[crumbKey] || '')}</b>`;
+  renderNav();
+  $('#content').innerHTML = V[cur]();
+  if (cur === 'pacientes') renderPList();
+  if (document.activeElement && document.activeElement.id === 'psearch') { /* mantém foco */ }
+  logoUI();
+  persist();
+}
+window.addEventListener('hashchange', () => { NOTICE = null; go(); });
+
+document.addEventListener('click', e => {
+  if (e.target.closest('#menu')) return;
+  $('#menu').classList.remove('open');
+  if (e.target.closest('[data-close]')) return closeModal();
+  if (e.target.closest('[data-hclose]')) return $('#hmodal').classList.remove('open');
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const { act, ent, id, type, to } = b.dataset;
+  if (act === 'goto') return (location.hash = '#' + to);
+  if (act === 'anexo') { const n = byId('invoices', id); if (n && n.file) { const a = document.createElement('a'); a.href = n.file.data; a.download = n.file.name; a.click(); } return; }
+  if (act === 'new') return FORMS[ent](null);
+  if (act === 'edit') return FORMS[ent](byId(ent, id));
+  if (act === 'hist') return openHist(ent, id);
+  if (act === 'del') { if (!confirm('Excluir este registro? A exclusão ficará registrada no histórico.')) return; removeRec(ent, id); return go(); }
+  if (act === 'done') { const w = byId('waitlist', id); if (w) removeRec('waitlist', id); return go(); }
+  if (act === 'paid') { const x = byId('cash', id); if (x) save('cash', { ...x, status: 'pago', date: today() }); return go(); }
+  if (act === 'ficha') { FICHA = id; FTAB = 'dados'; location.hash = '#ficha'; return go(); }
+  if (act === 'recibo') { const c = b.dataset.appt === '1' ? cashList().find(x => x.id === id) : byId('cash', id); if (c) recibo(c); return; }
+  if (act === 'move') return MOVE(id, type);
+  if (act === 'delmove') return DELMOVE(id);
+});
+$('#mClose').onclick = closeModal;
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+$('#hmodal').addEventListener('click', e => { if (e.target.id === 'hmodal') e.target.classList.remove('open'); });
+
+$('#menuBtn').onclick = e => { e.stopPropagation(); $('#menu').classList.toggle('open'); };
+$('#menu').addEventListener('click', e => {
+  const b = e.target.closest('[data-m]'); if (!b) return;
+  const m = b.dataset.m;
+  if (m === 'theme') {
+    document.body.classList.toggle('dark');
+    $('#themeBtn').textContent = document.body.classList.contains('dark') ? 'Tema claro' : 'Tema escuro';
+  }
+  if (m === 'fs') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  }
+  if (m === 'print') window.print();
+  if (m === 'xls') exportXLS();
+  if (m === 'sample' && confirm('Substituir os dados atuais pelos dados de exemplo?')) { seed(); go(); }
+  if (m === 'clear' && confirm('Apagar todos os dados?')) { DB = emptyDB(); go(); }
+});
+$('#impFile').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { await importXLS(f); alert('Backup importado.'); }
+  catch (err) { alert('Não foi possível importar: ' + err.message); }
+  e.target.value = '';
+};
+
+document.addEventListener('fullscreenchange', () => {
+  $('#fsBtn').textContent = document.fullscreenElement ? 'Sair da tela cheia' : 'Tela cheia';
+});
+$('#logoBox').onclick = () => $('#logoFile').click();
+$('#logoFile').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    LOGO = 'file'; $('#logoImg').src = r.result;
+    try { localStorage.setItem(LOGO_KEY, r.result); } catch (err) { alert('Logotipo grande demais para salvar. Use uma imagem menor.'); }
+    logoUI();
+  };
+  r.readAsDataURL(f);
+  e.target.value = '';
+};
+
+/* ============ persistência (salva no navegador deste computador) ============ */
+const STORE_KEY = 'alb-clin-dados-v5', LOGO_KEY = 'alb-clin-logo-v5';
+let storeWarned = false;
+const PREFS_KEY = 'alb-clin-prefs-v5';
+function savePrefs() {
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify({ dark: document.body.classList.contains('dark'), F, caixaType, NF, HQ })); } catch (err) {}
+}
+function loadPrefs() {
+  try {
+    const p = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+    if (!p) return;
+    if (p.dark) document.body.classList.add('dark');
+    if (p.F) Object.assign(F, p.F);
+    if (p.caixaType) caixaType = p.caixaType;
+    if (p.NF) NF = { ...NF, ...p.NF };
+    if (p.HQ) HQ = { ...HQ, ...p.HQ };
+  } catch (err) {}
+  $('#themeBtn').textContent = document.body.classList.contains('dark') ? 'Tema claro' : 'Tema escuro';
+}
+function persist() {
+  savePrefs();
+  queuePush();
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }
+  catch (err) { if (!storeWarned) { storeWarned = true; alert('Não foi possível salvar as informações neste navegador (espaço cheio). Evite anexos muito grandes.'); } }
+}
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return false;
+    DB = { ...emptyDB(), ...JSON.parse(raw) };
+    return true;
+  } catch (err) { return false; }
+}
+try { const sl = localStorage.getItem(LOGO_KEY); if (sl) $('#logoImg').src = sl; } catch (err) {}
+loadPrefs();
+if (!loadSaved()) seed();
+if (!location.hash) location.hash = '#painel';
+go();
+boot();
+
+/* ============ sincronização com o servidor (Netlify Functions + Blobs) ============ */
+const API = '/.netlify/functions/state';
+let pushTimer = null, booted = false;
+function clinicKey() {
+  let k = sessionStorage.getItem('alb-clin-key');
+  if (!k) { k = prompt('Senha de acesso da clínica:') || ''; if (k) sessionStorage.setItem('alb-clin-key', k); }
+  return k;
+}
+async function boot() {
+  try {
+    const r = await fetch(API, { headers: { 'x-clinic-key': clinicKey() } });
+    if (r.status === 401) { sessionStorage.removeItem('alb-clin-key'); alert('Senha incorreta. Recarregue a página para tentar de novo.'); return; }
+    if (r.ok) {
+      const remote = await r.json();
+      if (remote && remote.data) { DB = { ...emptyDB(), ...remote.data }; go(); }
+      else await pushRemote();
+    }
+  } catch (err) { /* sem conexão: usa o cache deste navegador */ }
+  booted = true;
+}
+function queuePush() {
+  if (!booted) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushRemote, 800);
+}
+async function pushRemote() {
+  try {
+    const r = await fetch(API, { method: 'PUT', headers: { 'content-type': 'application/json', 'x-clinic-key': sessionStorage.getItem('alb-clin-key') || '' }, body: JSON.stringify({ data: DB, savedAt: new Date().toISOString() }) });
+    if (r.status === 401) { sessionStorage.removeItem('alb-clin-key'); alert('Senha incorreta: as alterações não foram salvas no servidor.'); }
+  } catch (err) { /* tenta de novo na próxima alteração */ }
+}
+</script>
+</body>
+</html>

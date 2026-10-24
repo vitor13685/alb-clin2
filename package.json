@@ -1,0 +1,9 @@
+{
+  "name": "alb-clin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ALB CLIN - gestão de consultório de psicologia",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
