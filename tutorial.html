@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tutorial · ALB CLIN</title>
+<style>
+:root{--bg:#f3f5f9;--fg:#18202f;--card:#fff;--primary:#475569;--accent:#f2a84b;--border:#e2e7f0;--muted:#64748b;--soft:#f1f5fb;--side:#1f2937}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 Inter,"Segoe UI",system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{background:var(--side);color:#e5e7eb;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+header h1{font-size:17px;margin:0;font-weight:700}
+header .sub{font-size:12px;color:#9ca3af}
+header .prog{margin-left:auto;font-size:13px;color:#cbd5e1}
+.bar{height:4px;background:#d1d5db;flex-shrink:0}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+main{flex:1;display:grid;grid-template-columns:1fr 360px;gap:14px;padding:14px 18px;min-height:0}
+.screen{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.screen .tb{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.screen iframe{flex:1;border:0;width:100%;min-height:0}
+.side{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;overflow:auto;min-height:0}
+.who{display:flex;gap:10px;align-items:center}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
+.who b{display:block;font-size:14px}
+.who span{font-size:12px;color:var(--muted)}
+h2{font-size:17px;margin:4px 0 0}
+.txt{font-size:14px;line-height:1.6;margin:0}
+.how{background:var(--soft);border-radius:8px;padding:10px 12px;font-size:13px}
+.how b{display:block;margin-bottom:4px}
+.how ol{margin:0;padding-left:18px}
+.how li{margin:2px 0}
+.ctrl{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.btn{background:var(--primary);color:#fff;border:0;border-radius:7px;padding:8px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:var(--card);color:var(--fg);border:1px solid var(--border)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.play{background:var(--accent);color:#1a1a1a}
+.audio{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;flex-wrap:wrap}
+.audio label{display:flex;gap:4px;align-items:center;cursor:pointer}
+.dots{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.dots button{width:9px;height:9px;border-radius:50%;border:0;background:#cbd5e1;cursor:pointer;padding:0}
+.dots button.on{background:var(--accent)}
+.warn{font-size:12px;color:#9a5b00;background:#fdf0dc;border-radius:6px;padding:6px 8px;display:none}
+@media(max-width:900px){main{grid-template-columns:1fr;overflow:auto}.screen{min-height:420px}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Tutorial do ALB CLIN</h1><div class="sub">Aprendizagem e Desenvolvimento · use as setas do teclado para avançar</div></div>
+  <div class="prog" id="prog"></div>
+</header>
+<div class="bar"><i id="bar"></i></div>
+
+<main>
+  <section class="screen">
+    <div class="tb"><span id="scrTitle"></span><span>Tela real do aplicativo</span></div>
+    <iframe id="app" src="index.html#painel" title="Aplicativo ALB CLIN"></iframe>
+  </section>
+
+  <aside class="side">
+    <div class="who"><div class="avatar">A</div><div><b>Doutora Andrea</b><span>Passo a passo do sistema</span></div></div>
+    <h2 id="stTitle"></h2>
+    <p class="txt" id="stText"></p>
+    <div class="how"><b>Como fazer</b><ol id="stHow"></ol></div>
+
+    <div class="audio">
+      <button class="btn play" id="play">🔊 Ouvir explicação</button>
+      <button class="btn ghost" id="stop">■ Parar</button>
+      <label><input type="checkbox" id="auto" checked> Narrar automaticamente</label>
+    </div>
+
+    <div class="ctrl">
+      <button class="btn ghost" id="prev">‹ Anterior</button>
+      <button class="btn" id="next">Próximo ›</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </aside>
+</main>
+
+<script>
+const STEPS = [
+  { hash: 'painel', title: 'Painel', text: 'Esta é a tela Painel. Ela mostra o faturamento, o saldo do caixa, as contas a pagar, as faltas e a agenda de hoje. No topo, use os filtros de ano, mês, doutora e tipo de atendimento.',
+    how: ['Escolha o ano e o mês nos filtros do topo.', 'Veja os alertas em vermelho ou laranja: guias quase esgotadas, estoque baixo e contas a vencer.', 'Clique em "Ver" no alerta para ir direto à tela certa.'] },
+  { hash: 'agenda', title: 'Agenda', text: 'Na Agenda você marca os atendimentos do dia. Ao escolher o paciente, o valor, o convênio e a doutora são preenchidos sozinhos. Para repetir a sessão toda semana, use o campo de repetição.',
+    how: ['Clique em "+ Agendar".', 'Escolha a data, o horário, o paciente e a doutora.', 'Para trocar a situação, use o seletor da linha: agendado, confirmado, realizado, faltou ou cancelado.'] },
+  { hash: 'pacientes', title: 'Pacientes', text: 'Aqui ficam todos os pacientes. Pelo botão Prontuário você abre a ficha completa, com dados, anamnese, evoluções sigilosas, atendimentos e o termo de consentimento assinado.',
+    how: ['Use a busca e os filtros para encontrar o paciente.', 'Clique em "Prontuário" para abrir a ficha.', 'Em Prontuário, use "+ Nova evolução" para registrar a sessão.'] },
+  { hash: 'doutoras', title: 'Doutoras', text: 'Cadastre cada doutora com o CRP, a especialidade e o percentual de repasse. Esse percentual é usado na tela de Repasses.',
+    how: ['Clique em "+ Nova doutora".', 'Preencha os dados e o percentual de repasse.', 'Marque como indisponível quem não está atendendo no momento.'] },
+  { hash: 'convenios', title: 'Convênios e guias', text: 'Cadastre os convênios com o prazo de pagamento e as guias com a quantidade de sessões autorizadas. O sistema mostra quantas sessões já foram usadas e quantas restam em cada guia.',
+    how: ['Cadastre o convênio em "+ Convênio".', 'Cadastre a guia em "+ Guia", com o número, a validade e as sessões autorizadas.', 'Acompanhe o saldo: laranja indica pouco saldo e vermelho indica guia esgotada.'] },
+  { hash: 'espera', title: 'Lista de espera', text: 'Inscreva pacientes que aguardam vaga, com a doutora preferida e os horários de preferência. Quando surgir uma vaga, marque como ocupada.',
+    how: ['Clique em "+ Inscrever".', 'Preencha o nome, o telefone e a preferência.', 'Quando encaixar o paciente, clique em "Vaga ocupada".'] },
+  { hash: 'caixa', title: 'Caixa e contas', text: 'O caixa soma automaticamente as sessões realizadas. Você lança as despesas, marca as contas como pagas e gera o recibo para impressão.',
+    how: ['Clique em "+ Lançamento" para uma entrada ou saída.', 'Em contas pendentes, clique em "Marcar pago".', 'Clique em "Recibo" para imprimir o recibo de uma entrada.'] },
+  { hash: 'repasse', title: 'Repasses', text: 'Esta tela calcula quanto repassar a cada doutora. A taxa da clínica sobre convênios já é descontada antes do cálculo.',
+    how: ['Escolha o período nos filtros.', 'Confira o valor a repassar de cada doutora.', 'Use "Imprimir" para levar o relatório.'] },
+  { hash: 'insumos', title: 'Insumos', text: 'Controle o estoque de limpeza, higiene, escritório e materiais. A cada uso ou compra, registre uma movimentação. O sistema avisa quando um item fica abaixo do mínimo.',
+    how: ['Clique em "Entrada" para compras e em "Saída" para uso.', 'Informe a quantidade e, se quiser, uma observação.', 'Use "Desfazer" na movimentação se lançou errado.'] },
+  { hash: 'notas', title: 'Notas fiscais', text: 'Cadastre as notas de entrada e de saída e anexe o arquivo (PDF, XML ou imagem). A tela mostra as notas sem anexo para que nenhuma fique para trás.',
+    how: ['Clique em "+ Nova nota".', 'Escolha o tipo, o número, a data, o valor e o emitente ou destinatário.', 'Anexe o arquivo. Na lista, clique no nome do anexo para baixá-lo.'] },
+  { hash: 'historico', title: 'Histórico', text: 'O histórico registra tudo o que foi criado, editado ou excluído no sistema, com data, hora e o valor anterior de cada campo alterado.',
+    how: ['Use o filtro por área ou a busca por nome.', 'Em qualquer cadastro, clique em "Histórico" para ver só aquele registro.'] },
+  { hash: 'config', title: 'Configurações', text: 'Aqui ficam o nome da clínica, o CNPJ, o endereço e a taxa da clínica sobre convênios. Esses dados aparecem nos recibos e nos cálculos.',
+    how: ['Altere os dados e clique em "Salvar configurações".', 'A taxa informada é usada no Painel e em Repasses.'] },
+  { hash: 'config', title: 'Opções e logotipo', text: 'No botão "Opções", no alto da tela, você troca para o tema escuro, ativa a tela cheia, exporta e importa o backup em Excel, carrega dados de exemplo ou apaga tudo. Para trocar o logotipo, clique sobre ele na barra lateral.',
+    how: ['Clique em "⋯ Opções" no alto da tela.', 'Para exportar, escolha "Exportar backup (Excel / Sheets)".', 'Clique sobre o logotipo para escolher outra imagem.'] }
+];
+
+const LOGO_TEXT = 'Doutora Andrea, ';
+let idx = 0;
+const $ = s => document.querySelector(s);
+const synth = window.speechSynthesis;
+
+function narration(i) {
+  const s = STEPS[i];
+  return LOGO_TEXT + 'passo ' + (i + 1) + ' de ' + STEPS.length + ', ' + s.title + '. ' + s.text + ' Como fazer: ' + s.how.join('. ') + '.';
+}
+
+function speak(text) {
+  if (!synth) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'pt-BR'; u.rate = 0.95;
+  const pt = synth.getVoices().find(v => v.lang && v.lang.toLowerCase().startsWith('pt'));
+  if (pt) u.voice = pt;
+  synth.speak(u);
+}
+
+function render() {
+  const s = STEPS[idx];
+  $('#scrTitle').textContent = s.title;
+  $('#stTitle').textContent = s.title;
+  $('#stText').textContent = LOGO_TEXT + s.text;
+  $('#stHow').innerHTML = s.how.map(h => `<li>${h}</li>`).join('');
+  $('#prog').textContent = 'Passo ' + (idx + 1) + ' de ' + STEPS.length;
+  $('#bar').style.width = ((idx + 1) / STEPS.length * 100) + '%';
+  $('#prev').disabled = idx === 0;
+  $('#next').textContent = idx === STEPS.length - 1 ? 'Concluir ✓' : 'Próximo ›';
+  $('#dots').innerHTML = STEPS.map((_, i) => `<button class="${i === idx ? 'on' : ''}" data-i="${i}" title="Passo ${i + 1}"></button>`).join('');
+  const frame = $('#app');
+  const target = 'index.html#' + s.hash;
+  if (frame.getAttribute('src') !== target) frame.src = target;
+  if ($('#auto').checked) speak(narration(idx));
+}
+
+function go(i) {
+  if (i < 0 || i >= STEPS.length) return;
+  idx = i; render();
+}
+$('#prev').onclick = () => go(idx - 1);
+$('#next').onclick = () => { if (idx === STEPS.length - 1) { synth && synth.cancel(); idx = 0; render(); return; } go(idx + 1); };
+$('#play').onclick = () => speak(narration(idx));
+$('#stop').onclick = () => synth && synth.cancel();
+$('#dots').onclick = e => { const b = e.target.closest('[data-i]'); if (b) go(+b.dataset.i); };
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(idx + 1);
+  if (e.key === 'ArrowLeft') go(idx - 1);
+});
+render();
+</script>
+</body>
+</html>
